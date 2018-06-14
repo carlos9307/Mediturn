@@ -490,13 +490,13 @@ consulta($);*/
 
 									<div class="center">
 
-										<a href="pacientes-agregar.html" class="btn btn-sm btn-primary"> <i class="ace-icon glyphicon glyphicon-plus"></i>Agregar</a>
+										<a href="pacientes-agregar.php" class="btn btn-sm btn-primary"> <i class="ace-icon glyphicon glyphicon-plus"></i>Agregar</a>
 
 										<!--<a href="pacientes-agregar.html" class="btn btn-sm btn-info"> <i class="ace-icon glyphicon glyphicon-list"></i>Ver Detalle</a>
 
 										<a href="pacientes-agregar.html" class="btn btn-sm btn-warning"> <i class="ace-icon glyphicon glyphicon-ok"></i>Asignar Turno</a>-->
 
-										<a href="pacientes-agregar.html" class="btn btn-sm btn-success"> <i class="ace-icon glyphicon glyphicon-check"></i>Ver Turnos</a>
+										<a href="pacientes-agregar.php" class="btn btn-sm btn-success"> <i class="ace-icon glyphicon glyphicon-check"></i>Ver Turnos</a>
 
 									</div>
 								
