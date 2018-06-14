@@ -174,7 +174,7 @@ window.onload = function() {
 	function escribirDias() {
 		primeromes = new Date(anioCal, mesCal, "1");
 		prsem = primeromes.getDay();
-		prsem--;
+		//prsem--; Esto es solo si el dia empieza con lunes
 
 		if (prsem == -1) {prsem = 6;}
 
@@ -184,7 +184,7 @@ window.onload = function() {
 		diaMes = new Date();
 		diaMes.setTime(empezar);
 
-		for (i = 0; i < 7; i++) {
+		for (i = 1; i < 7; i++) {
 			fila = document.getElementById("fila" + i);
 			for (j = 0; j < 7; j++) {
 			
