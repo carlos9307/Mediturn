@@ -51,59 +51,73 @@ function armarSemana($horarios, $horarioActual, $dias) {
 //Funcion que arma la tabla	
 	foreach($horarios as $hora) { //Se recorre el array de horarios
 		echo "<tr><td>".$hora."</td>";
-		$vacio = true;
 		foreach($dias as $dia=>$fecha) {
+			$vacio = true;
 			if($dia != "Domingo") {
-				if (verificarLaborable($hora, $dia) == true) {
 				foreach ($horarioActual as $campo=>$estado) {	//Se recorre el array de turnos del dia
 					if (isset($_POST['patologias']) && $_POST['patologias'] != $estado['patologia']) { continue; }
 					if ($hora == date("H:i", strtotime($estado['HORA_TURNO'])) && date("w", strtotime($estado['FECHA_TURNO'])) == date("w", strtotime($fecha))) {	//Si el turno coincide con el horario y el dia
-						$vacio = false;
-						
-						$cantCamillas = obtenerCantidadCupos($estado['HORA_TURNO'], $horarioActual, "Camilla", $estado['FECHA_TURNO']); //Saco la cantidad de cupos de
-						$cantGimnasio = obtenerCantidadCupos($estado['HORA_TURNO'], $horarioActual, "Gimnasio", $estado['FECHA_TURNO']); //gimnasio y camilla en esa hora
-						$disponibilidad = estadoTurno($cantCamillas, $cantGimnasio);
+						if (verificarLaborable($hora, $dia) == true) {
+							$vacio = false;
+							
+							$cupos = obtenerCuposTurno($estado['FECHA_TURNO'], $hora); //guardo cantidad de cupos por hora y fecha dadas
+							$cantCamillas = 0;
+							$cantGimnasio = 0;
+							foreach($cupos as $reg=>$camp) {	//en este for asigno las cantidades para cada categoria
+								if($camp['sesion'] == "Camilla") {
+									$cantCamillas += $camp['cantidad'];
+								} elseif($camp['sesion'] =="Gimnasio") {
+									$cantGimnasio += $camp['cantidad'];
+								}
+							}
+							$disponibilidad = estadoTurno($cantCamillas, $cantGimnasio);
 
-						if ($disponibilidad == "Disponible") { //If que determina los colores de las casillas
-							$colorCasilla = "disponible";
-						} elseif($disponibilidad == "Libre") {
-							$colorCasilla = "libre";
-						} elseif($disponibilidad == "Ocupado") {
-							$colorCasilla = "ocupado";
+							if ($disponibilidad == "Disponible") { //If que determina los colores de las casillas
+								$colorCasilla = "disponible";
+							} elseif($disponibilidad == "Libre") {
+								$colorCasilla = "libre";
+							} elseif($disponibilidad == "Ocupado") {
+								$colorCasilla = "ocupado";
+							}
+									
+
+							/*if ($GLOBALS['perfil'] == "profesional") { //si el perfil es de profesional, se veran los cupos disponibles
+								echo "<td class=".$colorCasilla.">".$estado["camilla"]."</td>",
+								"<td class=".$colorCasilla.">".$estado["gimnasio"]."</td>";
+							} else { */
+							echo "<td class=".$colorCasilla.">".cantidadCupos($cantCamillas, $GLOBALS['MaximoCamillas'])."</td>",
+							"<td class=".$colorCasilla.">".cantidadCupos($cantGimnasio, $GLOBALS['MaximoGimnasio'])."</td>";
+							
+
+							if ($disponibilidad == "Disponible") { 
+								echo "<td class=".$colorCasilla."><input type='button' value='Si' /></td>";
+							} else {
+								echo "<td class=".$colorCasilla.">No</td>";
+							}
+							
+						} elseif (verificarLaborable($hora, $dia) == false) {
+							//Si la hora dada no es laboral el dia dado, entonces
+							echo "<td class='cerrado'>-</td>", 
+							"<td class='cerrado'>-</td>",
+							"<td class='cerrado'>-</td>";
 						}
-								
-
-						/*if ($GLOBALS['perfil'] == "profesional") { //si el perfil es de profesional, se veran los cupos disponibles
-							echo "<td class=".$colorCasilla.">".$estado["camilla"]."</td>",
-							"<td class=".$colorCasilla.">".$estado["gimnasio"]."</td>";
-						} else { */
-						echo "<td class=".$colorCasilla.">".cantidadCupos($cantCamillas, $GLOBALS['MaximoCamillas'])."</td>",
-						"<td class=".$colorCasilla.">".cantidadCupos($cantGimnasio, $GLOBALS['MaximoGimnasio'])."</td>";
-						
-
-						if ($disponibilidad == "Disponible") { 
-							echo "<td class=".$colorCasilla."><input type='button' value='Si' /></td>";
-						} else {
-							echo "<td class=".$colorCasilla.">No</td>";
-						}
-						
-					}
-				}
-				}
-				if ($vacio == true && verificarLaborable($hora, $dia) == true) { //Si en el horario no cayo ningun turno entonces...
-					if ($GLOBALS['perfil'] == "profesional") {
-						echo "<td class='libre'>".$GLOBALS['MaximoCamillas']."</td>", "<td class='libre'>".$GLOBALS['MaximoGimnasio']."</td>";
-					} else {
-						echo "<td class='libre'>Si</td>", "<td class='disponible'>Si</td>"; 
 					} 
-					echo "<td class='libre'><input type='button' value='Si'></button></td>";
-				} elseif ($vacio == true && verificarLaborable($hora, $dia) == false) {
-						//Si la hora dada no es laboral el dia dado, entonces
-						echo "<td class='cerrado'>-</td>", 
-						"<td class='cerrado'>-</td>",
-						"<td class='cerrado'>-</td>";
 				}
-					
+				if ($vacio == true) {
+						if(verificarLaborable($hora, $dia)) {
+							if ($GLOBALS['perfil'] == "profesional") {
+								echo "<td class='libre'>".$GLOBALS['MaximoCamillas']."</td>", "<td class='libre'>".$GLOBALS['MaximoGimnasio']."</td>";
+							} else {
+								echo "<td class='libre'>Si</td>", "<td class='disponible'>Si</td>"; 
+							} 
+							echo "<td class='libre'><input type='button' value='Si'></button></td>";
+						} else {
+							//Si la hora dada no es laboral el dia dado, entonces
+							echo "<td class='cerrado'>-</td>", 
+							"<td class='cerrado'>-</td>",
+							"<td class='cerrado'>-</td>";
+						}
+				}
 			}
 		}
 		echo "</tr>";
@@ -113,10 +127,10 @@ function armarSemana($horarios, $horarioActual, $dias) {
 function consultarTurnosSemana($fechaInicio, $fechaFin) { //Funcion que devuelve array con los turnos del dia
 	
 	//Armar consulta
-	$consultaTurnos = "SELECT COUNT(ID_TURNO) as cantidad, FECHA_TURNO, HORA_TURNO, ESTADO_TURNO, TIPO_SESION.DESCRIPCION as sesion, PATOLOGIA.DESCRIPCION as patologia";
-	$consultaTurnos .=" FROM TURNOS JOIN TIPO_SESION ON ID_TIPO_SESION = RELA_TIPO_SESION JOIN ESTADO_TURNO ON ID_ESTADO_TURNO = RELA_ESTADO_TURNO JOIN PATOLOGIA ON ID_PATOLOGIA = RELA_PATOLOGIA";
-	$consultaTurnos .=" GROUP BY HORA_TURNO, TIPO_SESION.DESCRIPCION, PATOLOGIA.DESCRIPCION, FECHA_TURNO, ESTADO_TURNO HAVING FECHA_TURNO >= '".$fechaInicio."' AND FECHA_TURNO <= '".$fechaFin."' AND ESTADO_TURNO = 'Pendiente'";
 	
+	$consultaTurnos="SELECT COUNT(ID_TURNO) as cantidad, FECHA_TURNO, HORA_TURNO FROM TURNOS JOIN TIPO_SESION ON ID_TIPO_SESION = ";
+	$consultaTurnos.="RELA_TIPO_SESION JOIN ESTADO_TURNO ON ID_ESTADO_TURNO = RELA_ESTADO_TURNO JOIN PATOLOGIA ON ID_PATOLOGIA = RELA_PATOLOGIA";
+	$consultaTurnos.=" GROUP BY HORA_TURNO, FECHA_TURNO, ESTADO_TURNO HAVING FECHA_TURNO >= '".$fechaInicio."' AND FECHA_TURNO <= '".$fechaFin."' AND ESTADO_TURNO = 'Pendiente'";
 	//Realizar Consulta
 	return consulta($consultaTurnos);
 }
