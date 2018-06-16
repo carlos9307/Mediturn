@@ -1,2 +1,2 @@
 # Turnomedic
-Sistema de Turnos - Analisis de Sistemas II
+Sistema de Turnos Online - Analisis de Sistemas II
