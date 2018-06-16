@@ -43,7 +43,7 @@
 <?php
 include("calendario-funciones.php");
 $matrizSemana = determinarSemana();
-
+print_r($matrizSemana);
 
 $horarios = array("07:00", "07:30", "08:00", "08:30", "09:00", "09:30", "10:00", "10:30", "11:00", "11:30", "12:00", "12:30", "17:00", "17:30", "18:00", "18:30", "19:00", "19:30", "20:00", "20:30", "21:00", "21:30", "22:00", "22:30", "23:00", "23:30");
 
@@ -137,8 +137,7 @@ function consultarTurnosSemana($fechaInicio, $fechaFin) { //Funcion que devuelve
 
 function determinarSemana() {
 	$fechaActual = date("Y-m-d");
-
-	if(sacarDia($fechaActual == "Domingo")) {	//Si el dia es domingo, pasamos a la semana siguiente
+	if(sacarDia($fechaActual) == "Domingo") {	//Si el dia es domingo, pasamos a la semana siguiente
 		$fechaActual = sumarFecha(date("Y-m-d"), 1, "+");
 	}
 
