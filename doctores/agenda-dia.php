@@ -91,7 +91,7 @@ function armarTabla($horarios, $horarioActual) {
 						$cantGimnasio += $camp['cantidad'];
 					}
 				}
-				 
+				
 				$disponibilidad = estadoTurno($cantCamillas, $cantGimnasio);
 
 

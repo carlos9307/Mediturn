@@ -42,11 +42,18 @@ function armarHorarioDia($fecha) { //Funcion que a partir de una fecha devuelve 
 function consultarTurnosDia($fechaActual) { //Funcion que devuelve array con los turnos del dia
 	
 	//Armar consulta
-	$consultaTurnos = "SELECT COUNT(ID_TURNO) as cantidad, FECHA_TURNO, HORA_TURNO, ESTADO_TURNO FROM TURNOS ";
-	$consultaTurnos.= "JOIN TIPO_SESION ON ID_TIPO_SESION = RELA_TIPO_SESION JOIN ESTADO_TURNO ON ID_ESTADO_TURNO = RELA_ESTADO_TURNO ";
-	$consultaTurnos.= "JOIN PATOLOGIA ON ID_PATOLOGIA = RELA_PATOLOGIA GROUP BY HORA_TURNO, FECHA_TURNO, ESTADO_TURNO";
-	 $consultaTurnos .=" HAVING FECHA_TURNO = '".$fechaActual."' AND ESTADO_TURNO = 'Pendiente'";
-	
+	if (isset($_POST['patologias'])) {
+		$consultaTurnos ="SELECT COUNT(ID_TURNO) as cantidad, PATOLOGIA.DESCRIPCION as patologia, FECHA_TURNO, ";
+		$consultaTurnos.= "HORA_TURNO, ESTADO_TURNO FROM TURNOS JOIN TIPO_SESION ON ID_TIPO_SESION = RELA_TIPO_SESION";
+		$consultaTurnos.=" JOIN ESTADO_TURNO ON ID_ESTADO_TURNO = RELA_ESTADO_TURNO JOIN PATOLOGIA ON ID_PATOLOGIA = ";
+		$consultaTurnos.="RELA_PATOLOGIA GROUP BY HORA_TURNO, FECHA_TURNO, PATOLOGIA.DESCRIPCION, ESTADO_TURNO HAVING ";
+		$consultaTurnos.="FECHA_TURNO = '".$fechaActual."' AND ESTADO_TURNO = 'Pendiente' AND PATOLOGIA.DESCRIPCION = '".$_POST['patologias']."'"; 
+	} else {
+		$consultaTurnos = "SELECT COUNT(ID_TURNO) as cantidad, FECHA_TURNO, HORA_TURNO, ESTADO_TURNO FROM TURNOS ";
+		$consultaTurnos.= "JOIN TIPO_SESION ON ID_TIPO_SESION = RELA_TIPO_SESION JOIN ESTADO_TURNO ON ID_ESTADO_TURNO = RELA_ESTADO_TURNO ";
+		$consultaTurnos.= "JOIN PATOLOGIA ON ID_PATOLOGIA = RELA_PATOLOGIA GROUP BY HORA_TURNO, FECHA_TURNO, ESTADO_TURNO";
+		 $consultaTurnos .=" HAVING FECHA_TURNO = '".$fechaActual."' AND ESTADO_TURNO = 'Pendiente'";
+	}
 	//Realizar Consulta
 	return consulta($consultaTurnos);
 }
@@ -78,20 +85,25 @@ function cantidadCupos($numero, $maximo) {
 
 function comboPatologias() {
 //Funcion para cargar los combos de las patologias
-	$Patologias = array("Dolor de Espalda", "Artrosis", "Lumbalgia");
+	$Patologias = consulta("SELECT DESCRIPCION FROM PATOLOGIA");
 	echo "<select name='patologias'>";
-	foreach($Patologias as $enfermedad) {
-		echo "<option>".$enfermedad."</option>";
+	foreach($Patologias as $registro=>$campo) {
+		echo "<option value='".$campo['DESCRIPCION']."'";
+		if(isset($_POST['patologias']) && $campo['DESCRIPCION'] == $_POST['patologias']) {
+			echo " selected";
+		}
+		echo ">".$campo['DESCRIPCION']."</option>";
 	}
 	echo "</select>";
+
 }
 
 function comboEspecialidades() {
 //Funcion para cargar los combos de las especialidades
-	$especialidades = array("Kinesiologo", "Urologo");
+	$especialidades = consulta("SELECT DESCRIPCION FROM ESPECIALIDADES");
 	echo "<select name='especialidades' id='especialidades'>";
-	foreach($especialidades as $nombre) {
-		echo "<option>".$nombre."</option>";
+	foreach($especialidades as $registro=>$campo) {
+		echo "<option>".$campo['DESCRIPCION']."</option>";
 	}
 	echo "</select>";
 }
@@ -130,11 +142,27 @@ function verificarLaborable($hora, $dia) {
 
 function obtenerCuposTurno($fecha, $hora) {
 	//Funcion que a partir de la fecha y la hora determina los cupos para camillas y para gimnasio
-	$consulta ="SELECT COUNT(ID_TURNO) as cantidad, FECHA_TURNO, HORA_TURNO, ESTADO_TURNO, TIPO_SESION.DESCRIPCION as sesion, PATOLOGIA.DESCRIPCION as patologia";
-	$consulta.=" FROM TURNOS JOIN TIPO_SESION ON ID_TIPO_SESION = RELA_TIPO_SESION JOIN ESTADO_TURNO ";
-	$consulta.="ON ID_ESTADO_TURNO = RELA_ESTADO_TURNO JOIN PATOLOGIA ON ID_PATOLOGIA = RELA_PATOLOGIA GROUP BY ";
-	$consulta.="HORA_TURNO, TIPO_SESION.DESCRIPCION, PATOLOGIA.DESCRIPCION, FECHA_TURNO, ESTADO_TURNO HAVING ";
-	$consulta.="FECHA_TURNO = '".$fecha."' AND HORA_TURNO = '".$hora."' AND ESTADO_TURNO = 'Pendiente'";
+	if(isset($_POST['patologias'])) {
+		$consulta="SELECT COUNT(ID_TURNO) as cantidad, FECHA_TURNO, HORA_TURNO, ESTADO_TURNO, TIPO_SESION.DESCRIPCION ";
+		$consulta.="as sesion, PATOLOGIA.DESCRIPCION as patologia FROM TURNOS JOIN TIPO_SESION ON ID_TIPO_SESION = ";
+		$consulta.="RELA_TIPO_SESION JOIN ESTADO_TURNO ON ID_ESTADO_TURNO = RELA_ESTADO_TURNO JOIN PATOLOGIA ON";
+		$consulta.=" ID_PATOLOGIA = RELA_PATOLOGIA GROUP BY HORA_TURNO, TIPO_SESION.DESCRIPCION, PATOLOGIA.DESCRIPCION, FECHA_TURNO, ESTADO_TURNO";
+		$consulta.=" HAVING FECHA_TURNO = '".$fecha."' AND HORA_TURNO = '".$hora."' AND ESTADO_TURNO = 'Pendiente' AND PATOLOGIA.DESCRIPCION = '".$_POST['patologias']."'";
+	} else {
+		$consulta ="SELECT COUNT(ID_TURNO) as cantidad, FECHA_TURNO, HORA_TURNO, ESTADO_TURNO, TIPO_SESION.DESCRIPCION as sesion";
+		$consulta.=" FROM TURNOS JOIN TIPO_SESION ON ID_TIPO_SESION = RELA_TIPO_SESION JOIN ESTADO_TURNO ";
+		$consulta.="ON ID_ESTADO_TURNO = RELA_ESTADO_TURNO GROUP BY ";
+		$consulta.="HORA_TURNO, TIPO_SESION.DESCRIPCION, FECHA_TURNO, ESTADO_TURNO HAVING ";
+		$consulta.="FECHA_TURNO = '".$fecha."' AND HORA_TURNO = '".$hora."' AND ESTADO_TURNO = 'Pendiente'";
+	}
 	return consulta($consulta);
+}
+
+function formatFecha($fecha, $tipo) {
+	if($tipo == "normal") {
+		return date("d/m/Y", strtotime($fecha));
+	} elseif($tipo == "sql") {
+		return date("Y-m-d", strtotime($fecha));
+	}
 }
 ?>
