@@ -37,4 +37,8 @@ function botonesRegistro($idRegistro, $tabla) { //Funcion para mostrar los boton
 											      	
 }
 
+function agregarPaciente() {
+	echo "hola";
+}
+
 ?>

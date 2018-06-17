@@ -43,7 +43,6 @@
 <?php
 include("calendario-funciones.php");
 $matrizSemana = determinarSemana();
-print_r($matrizSemana);
 
 $horarios = array("07:00", "07:30", "08:00", "08:30", "09:00", "09:30", "10:00", "10:30", "11:00", "11:30", "12:00", "12:30", "17:00", "17:30", "18:00", "18:30", "19:00", "19:30", "20:00", "20:30", "21:00", "21:30", "22:00", "22:30", "23:00", "23:30");
 
@@ -225,12 +224,12 @@ function obtenerCantidadCupos($hora, $matriz, $tipo, $fecha) {	//Contador de can
 			<tr>
 				<th rowspan=2 class="center scope="col"><img src="../assets/images/avatars/reloj.png"/></th>
 				
-				<th colspan=3 class="center scope="col">Lunes <?php echo $matrizSemana["Lunes"]; ?></th>
-				<th colspan=3 class="center scope="col">Martes <?php echo $matrizSemana["Martes"]; ?></th>
-				<th colspan=3 class="center scope="col">Miércoles <?php echo $matrizSemana["Miercoles"]; ?></th>
-				<th colspan=3 class="center scope="col">Jueves <?php echo $matrizSemana["Jueves"]; ?></th>
-				<th colspan=3 class="center scope="col">Viernes <?php echo $matrizSemana["Viernes"]; ?></th>
-				<th colspan=3 class="center scope="col">Sábado <?php echo $matrizSemana["Sabado"]; ?></th>
+				<th colspan=3 class="center scope="col">Lunes <?php echo formatFecha($matrizSemana["Lunes"], "normal"); ?></th>
+				<th colspan=3 class="center scope="col">Martes <?php echo formatFecha($matrizSemana["Martes"], "normal"); ?></th>
+				<th colspan=3 class="center scope="col">Miércoles <?php echo formatFecha($matrizSemana["Miercoles"], "normal"); ?></th>
+				<th colspan=3 class="center scope="col">Jueves <?php echo formatFecha($matrizSemana["Jueves"], "normal"); ?></th>
+				<th colspan=3 class="center scope="col">Viernes <?php echo formatFecha($matrizSemana["Viernes"], "normal"); ?></th>
+				<th colspan=3 class="center scope="col">Sábado <?php echo formatFecha($matrizSemana["Sabado"], "normal"); ?></th>
 			</tr>
 			<tr>
 				<td class="center scope="col"><img src="../assets/images/avatars/camilla.png"/></td> <td class="center scope="col"><img src="../assets/images/avatars/gim.png"/></td> <td class="center scope="col"><img src="../assets/images/avatars/reservar.png"/></td>
