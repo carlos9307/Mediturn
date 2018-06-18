@@ -44,6 +44,7 @@
 <?php 
 include("calendario-funciones.php");
  $fechaSeleccionada = mostrarFecha();
+ $GLOBALS['FECHASEL'] = $fechaSeleccionada;
 function mostrarFecha() {//Funcion para mostrar la fecha
 	if (isset($_GET['year']) && isset($_GET['mes']) && isset($_GET['dia'])) {	//Si se selecciono una fecha
 		
@@ -74,10 +75,19 @@ function armarTabla($horarios, $horarioActual) {
 	foreach($horarios as $hora) { //Se recorre el array de horarios
 		echo "<tr><td>".$hora."</td>";
 		$vacio = true;
+		if(isset($_POST['patologias']) && cupoPatologia($_POST['patologias'], $GLOBALS['FECHASEL'])== false) {
+			if($GLOBALS['perfil'] == 'Profesional') {
+				$gCant = 0;
+			} else {
+				$gCant = "No";
+			}
+			echo "<td class='ocupado'>Ocupado</td>", "<td class='ocupado'>".$gCant."</td>", "<td class='ocupado'>".$gCant."</td>",
+			"<td class='ocupado'>-</td>";
+			continue; }
 		foreach ($horarioActual as $registro=>$estado) {	//Se recorre el array de turnos del dia
 			
 			if (isset($_POST['patologias']) && $_POST['patologias'] != $estado['patologia']) { continue; }
-
+			
 			if ($hora == date("H:i", strtotime($estado['HORA_TURNO']))) {	//Si el turno coincide con el horario
 				
 				$vacio = false;
@@ -120,11 +130,11 @@ function armarTabla($horarios, $horarioActual) {
 			}
 		}
 		if ($vacio == true) { //Si en el horario no cayo ningun turno entonces...
-			echo "<td class='libre'>Disponible</td>"; 
+			echo "<td class='libre'>Libre</td>"; 
 			if ($GLOBALS['perfil'] == "profesional") {
 				echo "<td class='libre'>".$GLOBALS['MaximoCamillas']."</td>", "<td class='libre'>".$GLOBALS['MaximoGimnasio']."</td>";
 			} else {
-				echo "<td class='libre'>Si</td>", "<td class='disponible'>Si</td>"; 
+				echo "<td class='libre'>Si</td>", "<td class='libre'>Si</td>"; 
 			} 
 			echo "<td><input type='button' value='Si'></button></td>";
 		}

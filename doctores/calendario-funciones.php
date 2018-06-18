@@ -1,7 +1,7 @@
 <?php
 include('funciones.php');
 //Variables y Arrays
-$GLOBALS['perfil'] = "profesional";
+$GLOBALS['perfil'] = "paciente";
 $GLOBALS['MaximoCamillas'] = 4;
 $GLOBALS['MaximoGimnasio'] = 6;
 
@@ -108,6 +108,24 @@ function comboEspecialidades() {
 	echo "</select>";
 }
 
+function cupoPatologia($patologia, $fecha) {
+	//Funcion que determina si en una fecha dada, una patologia dada esta disponible
+	$semana = determinarSemana($fecha);
+	$consultaP = "SELECT COUNT(ID_TURNO) as cuposdisponibles, PATOLOGIA.DESCRIPCION, CUPOS, FECHA_TURNO FROM TURNOS JOIN PATOLOGIA ON ID_PATOLOGIA = RELA_PATOLOGIA";
+	$consultaP .= " GROUP BY PATOLOGIA.DESCRIPCION, CUPOS HAVING PATOLOGIA.DESCRIPCION LIKE '".$patologia."' "; 
+	$consultaP .= "AND FECHA_TURNO >= '".$semana['Lunes']."' AND FECHA_TURNO <= '".$semana['Sabado']."'";
+	$resultadoP = consulta($consultaP);
+	if(count($resultadoP) > 0) {
+		if($resultadoP[0]['CUPOS'] > $resultadoP[0]['cuposdisponibles']) {
+			return true;
+		} else {
+			return false;
+		}
+	} else {
+		return true;
+	}
+}
+
 function sacarDia($fecha) {
 	//Funcion que devuelve el nombre del dia de una fecha
 	$diasSemana = array(0=>"Domingo", 1=>"Lunes", 2=>"Martes", 3=>"Miercoles", 4=>"Jueves", 5=>"Viernes", 6=>"Sabado");	
@@ -131,6 +149,7 @@ function sumarFecha($fecha, $dias, $operador){
 }
 
 function verificarLaborable($hora, $dia) {
+	//Funcion que verifica si una hora en un dia es laboral o no
 	$consulta = "SELECT COUNT(*) as cantidad FROM JORNADAS WHERE DIA LIKE '".$dia."' and HORA_DESDE <= '".$hora."' and HORA_HASTA >= '".$hora."'";
 	$resultado = consulta($consulta);
 	if ($resultado[0]["cantidad"] > 0) {
@@ -164,5 +183,65 @@ function formatFecha($fecha, $tipo) {
 	} elseif($tipo == "sql") {
 		return date("Y-m-d", strtotime($fecha));
 	}
+}
+
+function determinarSemana($fechaActual) {
+	//Funcion para devolver el array de semanas
+	$fechaActual = date("Y-m-d", strtotime($fechaActual));
+	if(sacarDia($fechaActual) == "Domingo") {	//Si el dia es domingo, pasamos a la semana siguiente
+		$fechaActual = sumarFecha(date("Y-m-d"), 1, "+");
+	}
+
+	switch(sacarDia($fechaActual)) {	//Armamos la matriz de semana con las fechas segun que dia sea
+		case "Lunes":
+			$arraySemana["Lunes"] = $fechaActual;
+			$arraySemana["Martes"] = sumarFecha($fechaActual, 1,"+");
+			$arraySemana["Miercoles"] = sumarFecha($fechaActual, 2,"+");
+			$arraySemana["Jueves"] = sumarFecha($fechaActual, 3,"+");
+			$arraySemana["Viernes"] = sumarFecha($fechaActual, 4,"+");
+			$arraySemana["Sabado"] = sumarFecha($fechaActual, 5,"+");
+			break;
+		case "Martes":
+			$arraySemana["Lunes"] = sumarFecha($fechaActual, 1,"-");
+			$arraySemana["Martes"] = $fechaActual;
+			$arraySemana["Miercoles"] = sumarFecha($fechaActual, 1,"+");
+			$arraySemana["Jueves"] = sumarFecha($fechaActual, 2,"+");
+			$arraySemana["Viernes"] = sumarFecha($fechaActual, 3,"+");
+			$arraySemana["Sabado"] = sumarFecha($fechaActual, 4,"+");
+			break;
+		case "Miercoles":
+			$arraySemana["Lunes"] = sumarFecha($fechaActual, 2,"-");
+			$arraySemana["Martes"] = sumarFecha($fechaActual, 1,"-");
+			$arraySemana["Miercoles"] = $fechaActual;
+			$arraySemana["Jueves"] = sumarFecha($fechaActual, 1,"+");
+			$arraySemana["Viernes"] = sumarFecha($fechaActual, 2,"+");
+			$arraySemana["Sabado"] = sumarFecha($fechaActual, 3,"+");
+			break;
+		case "Jueves":
+			$arraySemana["Lunes"] = sumarFecha($fechaActual, 3,"-");
+			$arraySemana["Martes"] = sumarFecha($fechaActual, 2,"-");
+			$arraySemana["Miercoles"] = sumarFecha($fechaActual, 1,"-");
+			$arraySemana["Jueves"] = $fechaActual;
+			$arraySemana["Viernes"] = sumarFecha($fechaActual, 1,"+");
+			$arraySemana["Sabado"] = sumarFecha($fechaActual, 2,"+");
+			break;
+		case "Viernes":
+			$arraySemana["Lunes"] = sumarFecha($fechaActual, 4,"-");
+			$arraySemana["Martes"] = sumarFecha($fechaActual, 3,"-");
+			$arraySemana["Miercoles"] = sumarFecha($fechaActual, 2,"-");
+			$arraySemana["Jueves"] = sumarFecha($fechaActual, 1,"-");
+			$arraySemana["Viernes"] = $fechaActual;
+			$arraySemana["Sabado"] = sumarFecha($fechaActual, 1,"+");
+			break;
+		case "Sabado":
+			$arraySemana["Lunes"] = sumarFecha($fechaActual, 5,"-");
+			$arraySemana["Martes"] = sumarFecha($fechaActual, 4,"-");
+			$arraySemana["Miercoles"] = sumarFecha($fechaActual, 3,"-");
+			$arraySemana["Jueves"] = sumarFecha($fechaActual, 2,"-");
+			$arraySemana["Viernes"] = sumarFecha($fechaActual, 1,"-");
+			$arraySemana["Sabado"] = $fechaActual;
+			break;
+	}
+	return $arraySemana;
 }
 ?>

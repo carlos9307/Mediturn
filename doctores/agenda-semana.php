@@ -42,7 +42,7 @@
 </head>
 <?php
 include("calendario-funciones.php");
-$matrizSemana = determinarSemana();
+$matrizSemana = determinarSemana(date('Y-m-d'));
 
 $horarios = array("07:00", "07:30", "08:00", "08:30", "09:00", "09:30", "10:00", "10:30", "11:00", "11:30", "12:00", "12:30", "17:00", "17:30", "18:00", "18:30", "19:00", "19:30", "20:00", "20:30", "21:00", "21:30", "22:00", "22:30", "23:00", "23:30");
 
@@ -107,7 +107,7 @@ function armarSemana($horarios, $horarioActual, $dias) {
 							if ($GLOBALS['perfil'] == "profesional") {
 								echo "<td class='libre'>".$GLOBALS['MaximoCamillas']."</td>", "<td class='libre'>".$GLOBALS['MaximoGimnasio']."</td>";
 							} else {
-								echo "<td class='libre'>Si</td>", "<td class='disponible'>Si</td>"; 
+								echo "<td class='libre'>Si</td>", "<td class='libre'>Si</td>"; 
 							} 
 							echo "<td class='libre'><input type='button' value='Si'></button></td>";
 						} else {
@@ -126,72 +126,20 @@ function armarSemana($horarios, $horarioActual, $dias) {
 function consultarTurnosSemana($fechaInicio, $fechaFin) { //Funcion que devuelve array con los turnos del dia
 	
 	//Armar consulta
-	
-	$consultaTurnos="SELECT COUNT(ID_TURNO) as cantidad, FECHA_TURNO, HORA_TURNO FROM TURNOS JOIN TIPO_SESION ON ID_TIPO_SESION = ";
-	$consultaTurnos.="RELA_TIPO_SESION JOIN ESTADO_TURNO ON ID_ESTADO_TURNO = RELA_ESTADO_TURNO JOIN PATOLOGIA ON ID_PATOLOGIA = RELA_PATOLOGIA";
-	$consultaTurnos.=" GROUP BY HORA_TURNO, FECHA_TURNO, ESTADO_TURNO HAVING FECHA_TURNO >= '".$fechaInicio."' AND FECHA_TURNO <= '".$fechaFin."' AND ESTADO_TURNO = 'Pendiente'";
+	if(isset($_POST['patologias'])) {
+		$consultaTurnos = "SELECT COUNT(ID_TURNO) as cantidad, FECHA_TURNO, HORA_TURNO, PATOLOGIA.DESCRIPCION as patologia FROM TURNOS JOIN TIPO_SESION";
+		$consultaTurnos.= " ON ID_TIPO_SESION = RELA_TIPO_SESION JOIN ESTADO_TURNO ON ID_ESTADO_TURNO = RELA_ESTADO_TURNO JOIN PATOLOGIA ";
+		$consultaTurnos.= "ON ID_PATOLOGIA = RELA_PATOLOGIA GROUP BY HORA_TURNO, FECHA_TURNO, PATOLOGIA.DESCRIPCION, ESTADO_TURNO ";
+		$consultaTurnos.= "HAVING FECHA_TURNO >= '".$fechaInicio."' AND FECHA_TURNO <= '".$fechaFin."' AND ESTADO_TURNO = 'Pendiente' AND PATOLOGIA.DESCRIPCION LIKE '".$_POST['patologias']."'"; 
+	} else {
+		$consultaTurnos="SELECT COUNT(ID_TURNO) as cantidad, FECHA_TURNO, HORA_TURNO FROM TURNOS JOIN TIPO_SESION ON ID_TIPO_SESION = ";
+		$consultaTurnos.="RELA_TIPO_SESION JOIN ESTADO_TURNO ON ID_ESTADO_TURNO = RELA_ESTADO_TURNO JOIN PATOLOGIA ON ID_PATOLOGIA = RELA_PATOLOGIA";
+		$consultaTurnos.=" GROUP BY HORA_TURNO, FECHA_TURNO, ESTADO_TURNO HAVING FECHA_TURNO >= '".$fechaInicio."' AND FECHA_TURNO <= '".$fechaFin."' AND ESTADO_TURNO = 'Pendiente'";
+	}
 	//Realizar Consulta
 	return consulta($consultaTurnos);
 }
 
-function determinarSemana() {
-	$fechaActual = date("Y-m-d");
-	if(sacarDia($fechaActual) == "Domingo") {	//Si el dia es domingo, pasamos a la semana siguiente
-		$fechaActual = sumarFecha(date("Y-m-d"), 1, "+");
-	}
-
-	switch(sacarDia($fechaActual)) {	//Armamos la matriz de semana con las fechas segun que dia sea
-		case "Lunes":
-			$arraySemana["Lunes"] = $fechaActual;
-			$arraySemana["Martes"] = sumarFecha($fechaActual, 1,"+");
-			$arraySemana["Miercoles"] = sumarFecha($fechaActual, 2,"+");
-			$arraySemana["Jueves"] = sumarFecha($fechaActual, 3,"+");
-			$arraySemana["Viernes"] = sumarFecha($fechaActual, 4,"+");
-			$arraySemana["Sabado"] = sumarFecha($fechaActual, 5,"+");
-			break;
-		case "Martes":
-			$arraySemana["Lunes"] = sumarFecha($fechaActual, 1,"-");
-			$arraySemana["Martes"] = $fechaActual;
-			$arraySemana["Miercoles"] = sumarFecha($fechaActual, 1,"+");
-			$arraySemana["Jueves"] = sumarFecha($fechaActual, 2,"+");
-			$arraySemana["Viernes"] = sumarFecha($fechaActual, 3,"+");
-			$arraySemana["Sabado"] = sumarFecha($fechaActual, 4,"+");
-			break;
-		case "Miercoles":
-			$arraySemana["Lunes"] = sumarFecha($fechaActual, 2,"-");
-			$arraySemana["Martes"] = sumarFecha($fechaActual, 1,"-");
-			$arraySemana["Miercoles"] = $fechaActual;
-			$arraySemana["Jueves"] = sumarFecha($fechaActual, 1,"+");
-			$arraySemana["Viernes"] = sumarFecha($fechaActual, 2,"+");
-			$arraySemana["Sabado"] = sumarFecha($fechaActual, 3,"+");
-			break;
-		case "Jueves":
-			$arraySemana["Lunes"] = sumarFecha($fechaActual, 3,"-");
-			$arraySemana["Martes"] = sumarFecha($fechaActual, 2,"-");
-			$arraySemana["Miercoles"] = sumarFecha($fechaActual, 1,"-");
-			$arraySemana["Jueves"] = $fechaActual;
-			$arraySemana["Viernes"] = sumarFecha($fechaActual, 1,"+");
-			$arraySemana["Sabado"] = sumarFecha($fechaActual, 2,"+");
-			break;
-		case "Viernes":
-			$arraySemana["Lunes"] = sumarFecha($fechaActual, 4,"-");
-			$arraySemana["Martes"] = sumarFecha($fechaActual, 3,"-");
-			$arraySemana["Miercoles"] = sumarFecha($fechaActual, 2,"-");
-			$arraySemana["Jueves"] = sumarFecha($fechaActual, 1,"-");
-			$arraySemana["Viernes"] = $fechaActual;
-			$arraySemana["Sabado"] = sumarFecha($fechaActual, 1,"+");
-			break;
-		case "Sabado":
-			$arraySemana["Lunes"] = sumarFecha($fechaActual, 5,"-");
-			$arraySemana["Martes"] = sumarFecha($fechaActual, 4,"-");
-			$arraySemana["Miercoles"] = sumarFecha($fechaActual, 3,"-");
-			$arraySemana["Jueves"] = sumarFecha($fechaActual, 2,"-");
-			$arraySemana["Viernes"] = sumarFecha($fechaActual, 1,"-");
-			$arraySemana["Sabado"] = $fechaActual;
-			break;
-	}
-	return $arraySemana;
-}
 
 function obtenerCantidadCupos($hora, $matriz, $tipo, $fecha) {	//Contador de cantidades de cupos para semana
 	$contador = 0;
