@@ -1,6 +1,7 @@
 <?php 
 include ("funciones.php");
 
+
 function cargarTablaPacientes($claveBusqueda, $tipo){
 	if (isset($_GET['buscar'])) {
 		if($tipo == "dni") {
@@ -8,7 +9,6 @@ function cargarTablaPacientes($claveBusqueda, $tipo){
 		} elseif($tipo == "apyn") {
 			$consulta = "SELECT ID_PERSONA, ID_PACIENTE, APELLIDO, NOMBRE, FECHA_NAC, DNI FROM PERSONAS JOIN PACIENTES ON ID_PERSONA = RELA_PERSONA WHERE APELLIDO LIKE '".$claveBusqueda."%' OR NOMBRE LIKE '".$claveBusqueda."%';";
 		}
-		echo "entro aca";
 	} else {
 		$consulta = "SELECT ID_PERSONA, ID_PACIENTE, APELLIDO, NOMBRE, FECHA_NAC, DNI FROM PERSONAS JOIN PACIENTES ON ID_PERSONA = RELA_PERSONA";		
 	}
@@ -22,7 +22,11 @@ function cargarTablaPacientes($claveBusqueda, $tipo){
 		"<td>".$registro['DNI']."</td>",
 		"<td>".$registro['FECHA_NAC']."</td>";
 		echo "<td>";
-		botonesRegistro($registro['ID_PERSONA'], "PERSONAS");
+		if(!(isset($_SESSION['fechaTurno']))) {
+			botonesRegistro($registro['ID_PERSONA'], "PERSONAS");
+		} else {
+			echo "<input type='button' value='Seleccionar' />";
+		}
 		echo "</td></tr>";
 	} 
 }

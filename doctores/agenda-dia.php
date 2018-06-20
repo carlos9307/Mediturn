@@ -122,7 +122,7 @@ function armarTabla($horarios, $horarioActual) {
 				//Cargo el boton reservar si es que esta disponible
 				echo "<td>";
 				if ($disponibilidad == "Disponible") { 
-					echo "<input type='button' value='Si'></button>";
+					echo "<input type='button' value='Si' onclick='location=\"reservar.php?fecha=".$GLOBALS['FECHASEL']."&hora=".$hora."\";'/>";
 				} else {
 					echo "-";
 				}
@@ -136,7 +136,7 @@ function armarTabla($horarios, $horarioActual) {
 			} else {
 				echo "<td class='libre'>Si</td>", "<td class='libre'>Si</td>"; 
 			} 
-			echo "<td><input type='button' value='Si'></button></td>";
+			echo "<td><input type='button' value='Si' onclick='location=\"reservar.php?fecha=".$GLOBALS['FECHASEL']."&hora=".$hora."\";'/></td>";
 		}
 		echo "</tr>";
 	}
