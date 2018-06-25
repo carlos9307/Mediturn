@@ -25,7 +25,8 @@ function cargarTablaPacientes($claveBusqueda, $tipo){
 		if(!(isset($_SESSION['fechaTurno']))) {
 			botonesRegistro($registro['ID_PERSONA'], "PERSONAS");
 		} else {
-			echo "<input type='button' value='Seleccionar' />";
+			$apynom = $registro['APELLIDO']." ".$registro['NOMBRE'];
+			echo "<input type='button' value='Seleccionar' onclick='cargarPersona(".$registro['ID_PERSONA'].", \"".$apynom."\");'/>";
 		}
 		echo "</td></tr>";
 	} 

@@ -119,15 +119,15 @@ if(isset($_GET['fecha']) && isset($_GET['hora'])) { //Guardo la fecha y la hora 
 				    $criterio = "";
 				}
 					cargarTablaPacientes($claveBuscar, $criterio);
-			?>
-											    
+			?>								    
 		</tbody>
 	</table>
 		
 </div>
 </div>
     <form action="" method="post">
-        Paciente <label id="pacienteSelec"></label><input type="button" value="Buscar" onclick="mostrar('buscarPersona');" />
+        Paciente <label id="pacienteSelec" name="pacienteSelec" value=""></label><input type="button" value="Buscar" onclick="mostrar('buscarPersona');" />
+        <input type="hidden" value="" id="idpersona" name="idpersona"/> 
     </form>
     <script type="text/javascript">
 			if('ontouchstart' in document.documentElement) document.write("<script src='../assets/js/jquery.mobile.custom.min.js'>"+"<"+"/script>");
@@ -166,6 +166,14 @@ if(isset($_GET['fecha']) && isset($_GET['hora'])) { //Guardo la fecha y la hora 
 		    function ocultar(elemento){
 			    document.getElementById(elemento).style.display = 'none';
             }
+
+            function cargarPersona(id, nombre) {
+                document.getElementById("pacienteSelec").value = nombre;
+                document.getElementById("pacienteSelec").innerHTML = nombre;
+                document.getElementById("idpersona").value = id;
+                ocultar("buscarPersona");
+            }
+
             <?php 
             if (isset($_GET['buscar'])) {
                 echo "var buscando =  ".$_GET['buscar'].";";
