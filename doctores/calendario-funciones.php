@@ -244,4 +244,40 @@ function determinarSemana($fechaActual) {
 	}
 	return $arraySemana;
 }
+
+function cargarTurno($fecha, $hora, $paciente, $patologia, $tipoSesion) {
+	$consulta="INSERT INTO TURNOS(RELA_PACIENTE, RELA_MEDICO, RELA_TIPO_SESION, FECHA_TURNO, HORA_TURNO, RELA_ESTADO_TURNO, RELA_PATOLOGIA)";
+	$consulta.=" VALUES(".$paciente.", 1, ".$tipoSesion.", '".$fecha."', '".$hora."', 1, ".$patologia.")";
+	modificarBD($consulta);
+	echo "<script>alert('El turno para la fecha ".$fecha." y hora ".$hora." ha sido cargado correctamente');</script>";
+}
+
+function comboTipoSesion($hora, $fecha) {
+//Funcion que arma el combo con las secciones disponibles para un turno dadas su hora y fecha
+	$mSesiones = obtenerCuposTurno($fecha, $hora);
+	$cantCamillas = 0;
+	$cantGimnasio = 0;
+	foreach($mSesiones as $reg=>$camp) {	//en este for asigno las cantidades para cada categoria
+		if($camp['sesion'] == "Camilla") {
+			$cantCamillas += $camp['cantidad'];
+		} elseif($camp['sesion'] =="Gimnasio") {
+			$cantGimnasio += $camp['cantidad'];
+		}
+	}
+	$sesionTipo = consulta("SELECT ID_TIPO_SESION, DESCRIPCION, CUPOS FROM TIPO_SESION");
+	echo "<select name='tiposesion'>";
+	foreach($sesionTipo as $registro=>$campo) {
+		if($campo['DESCRIPCION'] == "Camilla") {
+			if ($cantCamillas < $campo['CUPOS']) {
+				echo "<option value='".$campo['ID_TIPO_SESION']."'>".$campo['DESCRIPCION']."</option>";
+			}
+		} elseif($campo['DESCRIPCION'] == "Gimnasio") {
+			if ($cantGimnasio < $campo['CUPOS']) {
+				echo "<option value='".$campo['ID_TIPO_SESION']."'>".$campo['DESCRIPCION']."</option>";
+			}
+		}
+	}
+	echo "</select>";
+}
+
 ?>

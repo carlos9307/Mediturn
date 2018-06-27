@@ -1,5 +1,5 @@
 <?php 
-include ("funciones.php");
+include ("calendario-funciones.php");
 
 
 function cargarTablaPacientes($claveBusqueda, $tipo){
@@ -16,14 +16,14 @@ function cargarTablaPacientes($claveBusqueda, $tipo){
 	$matrizPersonas = consulta($consulta);
 
 	foreach ($matrizPersonas as $tabla=>$registro) {
-		echo "<tr><td>".$registro['ID_PERSONA']."</td>",
+		echo "<tr><td>".$registro['ID_PACIENTE']."</td>",
 		"<td>".$registro['APELLIDO']."</td>",
 		"<td>".$registro['NOMBRE']."</td>",
 		"<td>".$registro['DNI']."</td>",
 		"<td>".$registro['FECHA_NAC']."</td>";
 		echo "<td>";
 		if(!(isset($_SESSION['fechaTurno']))) {
-			botonesRegistro($registro['ID_PERSONA'], "PERSONAS");
+			botonesRegistro($registro['ID_PACIENTE'], "PERSONAS");
 		} else {
 			$apynom = $registro['APELLIDO']." ".$registro['NOMBRE'];
 			echo "<input type='button' value='Seleccionar' onclick='cargarPersona(".$registro['ID_PERSONA'].", \"".$apynom."\");'/>";
@@ -40,6 +40,17 @@ function botonesRegistro($idRegistro, $tabla) { //Funcion para mostrar los boton
 		"<i class='ace-icon glyphicon glyphicon-trash bigger-130'></i></a>",
 		"</div>";
 											      	
+}
+
+function comboPatologiasDisponibles($fecha) {
+	$listaPatologias = consulta("SELECT ID_PATOLOGIA, DESCRIPCION FROM PATOLOGIA");
+	echo "<select name='patologia'>";
+	foreach($listaPatologias as $registro=>$campo) {
+		if(cupoPatologia($campo['DESCRIPCION'], $fecha)) {
+			echo "<option value='".$campo['ID_PATOLOGIA']."'>".$campo['DESCRIPCION']."</option>";
+		}
+	}
+	echo "</select>";
 }
 
 function agregarPaciente() {

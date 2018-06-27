@@ -5,7 +5,7 @@ if(isset($_GET['fecha']) && isset($_GET['hora'])) { //Guardo la fecha y la hora 
     $_SESSION['horaTurno'] = $_GET['hora'];
 }
 ?>
-<!DOCTYPE <!DOCTYPE html>
+<!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8" />
@@ -125,9 +125,16 @@ if(isset($_GET['fecha']) && isset($_GET['hora'])) { //Guardo la fecha y la hora 
 		
 </div>
 </div>
-    <form action="" method="post">
-        Paciente <label id="pacienteSelec" name="pacienteSelec" value=""></label><input type="button" value="Buscar" onclick="mostrar('buscarPersona');" />
-        <input type="hidden" value="" id="idpersona" name="idpersona"/> 
+    <form action="generador.php" method="post">
+        Paciente: <label id="pacienteSelec" name="pacienteSelec" value=""></label><input type="button" value="Buscar" onclick="mostrar('buscarPersona');" /><br/>
+        <input type="hidden" id="idpaciente" name="idpaciente"/> 
+        Fecha: <label id="fechaturno" value=<?php echo "'".$_SESSION['fechaTurno']."'><b>".$_SESSION['fechaTurno'];?></b></label><br/>
+        <input type="hidden" value=<?php echo "'".$_SESSION['fechaTurno']."'" ?> name="fechaturno"/>
+        Horario: <label id="horario" value=<?php echo "'".$_SESSION['horaTurno']."'><b>".$_SESSION['horaTurno'];?></b></label><br/>
+        <input type="hidden" value=<?php echo "'".$_SESSION['horaTurno']."'" ?> name="horario"/>
+        Patología: <?php comboPatologiasDisponibles($_SESSION['fechaTurno']); ?><br/>
+        Tipo de Sesión: <?php comboTipoSesion($_SESSION['fechaTurno'], $_SESSION['horaTurno']); ?> <br/>
+        <input class="btn btn-sm btn-succes" type="submit" value="Guardar Turno" />
     </form>
     <script type="text/javascript">
 			if('ontouchstart' in document.documentElement) document.write("<script src='../assets/js/jquery.mobile.custom.min.js'>"+"<"+"/script>");
@@ -170,7 +177,7 @@ if(isset($_GET['fecha']) && isset($_GET['hora'])) { //Guardo la fecha y la hora 
             function cargarPersona(id, nombre) {
                 document.getElementById("pacienteSelec").value = nombre;
                 document.getElementById("pacienteSelec").innerHTML = nombre;
-                document.getElementById("idpersona").value = id;
+                document.getElementById("idpaciente").value = id;
                 ocultar("buscarPersona");
             }
 
