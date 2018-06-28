@@ -280,4 +280,21 @@ function comboTipoSesion($hora, $fecha) {
 	echo "</select>";
 }
 
+function verificarFeriado($fecha) {
+	//Funcion que verifica si un dia es feriado (en desuso)
+	$fechaV = date('Y-m-d', strtotime($fecha));
+
+	$consulta = "SELECT COUNT(ID_FERIADO) AS CANTIDAD FROM FERIADOS WHERE FECHA_FERIADO = '".$fechaV."'";
+	$feriadoSi = consulta($consulta);	
+
+	if($feriadoSi != NULL) {
+		if($feriadoSi[0]['CANTIDAD'] > 0) {
+			return true;
+		} else {
+			return false;
+		}
+	} else {
+		return false;
+	}
+}
 ?>
