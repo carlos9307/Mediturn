@@ -89,7 +89,7 @@ function armarSemana($horarios, $horarioActual, $dias) {
 							
 
 							if ($disponibilidad == "Disponible") { 
-								echo "<td class=".$colorCasilla."><input type='button' value='Si' /></td>";
+								echo "<td class=".$colorCasilla."><input type='button' value='Si' onclick='location=\"reservar.php?fecha=".$fecha."&hora=".$hora."\";'/></td>";
 							} else {
 								echo "<td class=".$colorCasilla.">No</td>";
 							}
@@ -109,7 +109,7 @@ function armarSemana($horarios, $horarioActual, $dias) {
 							} else {
 								echo "<td class='libre'>Si</td>", "<td class='libre'>Si</td>"; 
 							} 
-							echo "<td class='libre'><input type='button' value='Si'></button></td>";
+							echo "<td class='libre'><input type='button' value='Si' onclick='location=\"reservar.php?fecha=".$fecha."&hora=".$hora."\";'/></td>";
 						} else {
 							//Si la hora dada no es laboral el dia dado, entonces
 							echo "<td class='cerrado'>-</td>", 
