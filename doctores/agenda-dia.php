@@ -76,7 +76,7 @@ function armarTabla($horarios, $horarioActual) {
 		echo "<tr><td>".$hora."</td>";
 		$vacio = true;
 		if(isset($_POST['patologias']) && cupoPatologia($_POST['patologias'], $GLOBALS['FECHASEL'])== false) {
-			if($GLOBALS['perfil'] == 'Profesional') {
+			if($_SESSION['perfil'] == 'Administrador') {
 				$gCant = 0;
 			} else {
 				$gCant = "No";
@@ -131,7 +131,7 @@ function armarTabla($horarios, $horarioActual) {
 		}
 		if ($vacio == true) { //Si en el horario no cayo ningun turno entonces...
 			echo "<td class='libre'>Libre</td>"; 
-			if ($GLOBALS['perfil'] == "profesional") {
+			if ($_SESSION['perfil'] == "Administrador") {
 				echo "<td class='libre'>".$GLOBALS['MaximoCamillas']."</td>", "<td class='libre'>".$GLOBALS['MaximoGimnasio']."</td>";
 			} else {
 				echo "<td class='libre'>Si</td>", "<td class='libre'>Si</td>"; 

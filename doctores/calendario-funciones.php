@@ -1,7 +1,7 @@
 <?php
 include('funciones.php');
 //Variables y Arrays
-$GLOBALS['perfil'] = "paciente";
+$_SESSION['perfil'] = "Administrador";
 $GLOBALS['MaximoCamillas'] = 4;
 $GLOBALS['MaximoGimnasio'] = 6;
 
@@ -71,7 +71,7 @@ function estadoTurno($eCamillas, $eGimnasio) {
 
 function cantidadCupos($numero, $maximo) {
 //Funcion que devuelve si o no si la cantidad de cupos es mayor a x numero
-	if($GLOBALS['perfil'] == "profesional") {
+	if($_SESSION['perfil'] == "profesional") {
 		return $maximo - $numero;
 	} else {
 		if ($numero < $maximo) {

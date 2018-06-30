@@ -57,4 +57,33 @@ function agregarPaciente() {
 	echo "hola";
 }
 
+function cargarTurnosparaHoy() {
+	//Funcion que carga la tabla de turnos del dia para el doctor
+	$fecha = date('Y-m-d');
+	$consulta = "SELECT ID_TURNO,HORA_TURNO, FECHA_TURNO, ESTADO_TURNO, TIPO_SESION.DESCRIPCION AS SESION, NOMBRE, APELLIDO";
+	$consulta.=" FROM TURNOS JOIN ESTADO_TURNO ON ID_ESTADO_TURNO = RELA_ESTADO_TURNO JOIN TIPO_SESION ON ";
+	$consulta.="ID_TIPO_SESION =RELA_TIPO_SESION JOIN PACIENTES ON ID_PACIENTE = RELA_PACIENTE JOIN PERSONAS ON ";
+	$consulta.="ID_PERSONA = RELA_PERSONA WHERE FECHA_TURNO = '".$fecha."'";
+
+	$TurnosHoy = consulta($consulta);
+
+	if($TurnosHoy != NULL) {
+		foreach($TurnosHoy as $registro=>$campo) {
+			echo "<tr><td>".$campo['HORA_TURNO']."</td>";
+			if($campo['ESTADO_TURNO'] == 'Pendiente') {
+				$clase = "pendiente";
+			} elseif ($campo['ESTADO_TURNO'] == 'Atendido') {
+				$clase = "atendido";
+			} else {
+				$clase = "ausente";
+			}
+			echo "<td class='".$clase."'>".$campo['ESTADO_TURNO']."</td>";
+			echo "<td>".$campo['SESION']."</td>";
+			echo "<td>".$campo['NOMBRE']." ".$campo['APELLIDO']."</td>";
+			echo "<td><input type='button' value='Atendido' onclick='operacion(1, ".$campo['ID_TURNO'].");'/><input type='button' value='Ausente' onclick='operacion(2, ".$campo['ID_TURNO'].");' /><input type='button' value='Cancelar Turno' onclick='operacion(3, ".$campo['ID_TURNO'].");' /></td></tr>";
+		}
+	} else {
+		echo "<tr><td colspan=5>Sin turnos</td></tr>";
+	}
+}
 ?>

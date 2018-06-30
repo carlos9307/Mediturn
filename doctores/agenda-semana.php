@@ -104,7 +104,7 @@ function armarSemana($horarios, $horarioActual, $dias) {
 				}
 				if ($vacio == true) {
 						if(verificarLaborable($hora, $dia)) {
-							if ($GLOBALS['perfil'] == "profesional") {
+							if ($_SESSION['perfil'] == "Administrador") {
 								echo "<td class='libre'>".$GLOBALS['MaximoCamillas']."</td>", "<td class='libre'>".$GLOBALS['MaximoGimnasio']."</td>";
 							} else {
 								echo "<td class='libre'>Si</td>", "<td class='libre'>Si</td>"; 
