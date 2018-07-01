@@ -42,8 +42,7 @@
 </head>
 <?php
 include("calendario-funciones.php");
-$matrizSemana = determinarSemana();
-
+$matrizSemana = determinarSemana(date('Y-m-d'));
 
 $horarios = array("07:00", "07:30", "08:00", "08:30", "09:00", "09:30", "10:00", "10:30", "11:00", "11:30", "12:00", "12:30", "17:00", "17:30", "18:00", "18:30", "19:00", "19:30", "20:00", "20:30", "21:00", "21:30", "22:00", "22:30", "23:00", "23:30");
 
@@ -90,7 +89,7 @@ function armarSemana($horarios, $horarioActual, $dias) {
 							
 
 							if ($disponibilidad == "Disponible") { 
-								echo "<td class=".$colorCasilla."><input type='button' value='Si' /></td>";
+								echo "<td class=".$colorCasilla."><input type='button' value='Si' onclick='location=\"reservar.php?fecha=".$fecha."&hora=".$hora."\";'/></td>";
 							} else {
 								echo "<td class=".$colorCasilla.">No</td>";
 							}
@@ -105,12 +104,12 @@ function armarSemana($horarios, $horarioActual, $dias) {
 				}
 				if ($vacio == true) {
 						if(verificarLaborable($hora, $dia)) {
-							if ($GLOBALS['perfil'] == "profesional") {
+							if ($_SESSION['perfil'] == "Administrador") {
 								echo "<td class='libre'>".$GLOBALS['MaximoCamillas']."</td>", "<td class='libre'>".$GLOBALS['MaximoGimnasio']."</td>";
 							} else {
-								echo "<td class='libre'>Si</td>", "<td class='disponible'>Si</td>"; 
+								echo "<td class='libre'>Si</td>", "<td class='libre'>Si</td>"; 
 							} 
-							echo "<td class='libre'><input type='button' value='Si'></button></td>";
+							echo "<td class='libre'><input type='button' value='Si' onclick='location=\"reservar.php?fecha=".$fecha."&hora=".$hora."\";'/></td>";
 						} else {
 							//Si la hora dada no es laboral el dia dado, entonces
 							echo "<td class='cerrado'>-</td>", 
@@ -127,73 +126,20 @@ function armarSemana($horarios, $horarioActual, $dias) {
 function consultarTurnosSemana($fechaInicio, $fechaFin) { //Funcion que devuelve array con los turnos del dia
 	
 	//Armar consulta
-	
-	$consultaTurnos="SELECT COUNT(ID_TURNO) as cantidad, FECHA_TURNO, HORA_TURNO FROM TURNOS JOIN TIPO_SESION ON ID_TIPO_SESION = ";
-	$consultaTurnos.="RELA_TIPO_SESION JOIN ESTADO_TURNO ON ID_ESTADO_TURNO = RELA_ESTADO_TURNO JOIN PATOLOGIA ON ID_PATOLOGIA = RELA_PATOLOGIA";
-	$consultaTurnos.=" GROUP BY HORA_TURNO, FECHA_TURNO, ESTADO_TURNO HAVING FECHA_TURNO >= '".$fechaInicio."' AND FECHA_TURNO <= '".$fechaFin."' AND ESTADO_TURNO = 'Pendiente'";
+	if(isset($_POST['patologias'])) {
+		$consultaTurnos = "SELECT COUNT(ID_TURNO) as cantidad, FECHA_TURNO, HORA_TURNO, PATOLOGIA.DESCRIPCION as patologia FROM TURNOS JOIN TIPO_SESION";
+		$consultaTurnos.= " ON ID_TIPO_SESION = RELA_TIPO_SESION JOIN ESTADO_TURNO ON ID_ESTADO_TURNO = RELA_ESTADO_TURNO JOIN PATOLOGIA ";
+		$consultaTurnos.= "ON ID_PATOLOGIA = RELA_PATOLOGIA GROUP BY HORA_TURNO, FECHA_TURNO, PATOLOGIA.DESCRIPCION, ESTADO_TURNO ";
+		$consultaTurnos.= "HAVING FECHA_TURNO >= '".$fechaInicio."' AND FECHA_TURNO <= '".$fechaFin."' AND ESTADO_TURNO = 'Pendiente' AND PATOLOGIA.DESCRIPCION LIKE '".$_POST['patologias']."'"; 
+	} else {
+		$consultaTurnos="SELECT COUNT(ID_TURNO) as cantidad, FECHA_TURNO, HORA_TURNO FROM TURNOS JOIN TIPO_SESION ON ID_TIPO_SESION = ";
+		$consultaTurnos.="RELA_TIPO_SESION JOIN ESTADO_TURNO ON ID_ESTADO_TURNO = RELA_ESTADO_TURNO JOIN PATOLOGIA ON ID_PATOLOGIA = RELA_PATOLOGIA";
+		$consultaTurnos.=" GROUP BY HORA_TURNO, FECHA_TURNO, ESTADO_TURNO HAVING FECHA_TURNO >= '".$fechaInicio."' AND FECHA_TURNO <= '".$fechaFin."' AND ESTADO_TURNO = 'Pendiente'";
+	}
 	//Realizar Consulta
 	return consulta($consultaTurnos);
 }
 
-function determinarSemana() {
-	$fechaActual = date("Y-m-d");
-
-	if(sacarDia($fechaActual == "Domingo")) {	//Si el dia es domingo, pasamos a la semana siguiente
-		$fechaActual = sumarFecha(date("Y-m-d"), 1, "+");
-	}
-
-	switch(sacarDia($fechaActual)) {	//Armamos la matriz de semana con las fechas segun que dia sea
-		case "Lunes":
-			$arraySemana["Lunes"] = $fechaActual;
-			$arraySemana["Martes"] = sumarFecha($fechaActual, 1,"+");
-			$arraySemana["Miercoles"] = sumarFecha($fechaActual, 2,"+");
-			$arraySemana["Jueves"] = sumarFecha($fechaActual, 3,"+");
-			$arraySemana["Viernes"] = sumarFecha($fechaActual, 4,"+");
-			$arraySemana["Sabado"] = sumarFecha($fechaActual, 5,"+");
-			break;
-		case "Martes":
-			$arraySemana["Lunes"] = sumarFecha($fechaActual, 1,"-");
-			$arraySemana["Martes"] = $fechaActual;
-			$arraySemana["Miercoles"] = sumarFecha($fechaActual, 1,"+");
-			$arraySemana["Jueves"] = sumarFecha($fechaActual, 2,"+");
-			$arraySemana["Viernes"] = sumarFecha($fechaActual, 3,"+");
-			$arraySemana["Sabado"] = sumarFecha($fechaActual, 4,"+");
-			break;
-		case "Miercoles":
-			$arraySemana["Lunes"] = sumarFecha($fechaActual, 2,"-");
-			$arraySemana["Martes"] = sumarFecha($fechaActual, 1,"-");
-			$arraySemana["Miercoles"] = $fechaActual;
-			$arraySemana["Jueves"] = sumarFecha($fechaActual, 1,"+");
-			$arraySemana["Viernes"] = sumarFecha($fechaActual, 2,"+");
-			$arraySemana["Sabado"] = sumarFecha($fechaActual, 3,"+");
-			break;
-		case "Jueves":
-			$arraySemana["Lunes"] = sumarFecha($fechaActual, 3,"-");
-			$arraySemana["Martes"] = sumarFecha($fechaActual, 2,"-");
-			$arraySemana["Miercoles"] = sumarFecha($fechaActual, 1,"-");
-			$arraySemana["Jueves"] = $fechaActual;
-			$arraySemana["Viernes"] = sumarFecha($fechaActual, 1,"+");
-			$arraySemana["Sabado"] = sumarFecha($fechaActual, 2,"+");
-			break;
-		case "Viernes":
-			$arraySemana["Lunes"] = sumarFecha($fechaActual, 4,"-");
-			$arraySemana["Martes"] = sumarFecha($fechaActual, 3,"-");
-			$arraySemana["Miercoles"] = sumarFecha($fechaActual, 2,"-");
-			$arraySemana["Jueves"] = sumarFecha($fechaActual, 1,"-");
-			$arraySemana["Viernes"] = $fechaActual;
-			$arraySemana["Sabado"] = sumarFecha($fechaActual, 1,"+");
-			break;
-		case "Sabado":
-			$arraySemana["Lunes"] = sumarFecha($fechaActual, 5,"-");
-			$arraySemana["Martes"] = sumarFecha($fechaActual, 4,"-");
-			$arraySemana["Miercoles"] = sumarFecha($fechaActual, 3,"-");
-			$arraySemana["Jueves"] = sumarFecha($fechaActual, 2,"-");
-			$arraySemana["Viernes"] = sumarFecha($fechaActual, 1,"-");
-			$arraySemana["Sabado"] = $fechaActual;
-			break;
-	}
-	return $arraySemana;
-}
 
 function obtenerCantidadCupos($hora, $matriz, $tipo, $fecha) {	//Contador de cantidades de cupos para semana
 	$contador = 0;
@@ -208,7 +154,7 @@ function obtenerCantidadCupos($hora, $matriz, $tipo, $fecha) {	//Contador de can
 <body>
 
 <form>
-	<input type="button" value="Ver Mes" / onclick="location='calendario.html';">
+	<input type="button" value="Ver Mes" / onclick="location='calendario.php';">
 	<input type="button" value="Ver Semana" onclick="location='agenda-semana.php';" />
 	<input type="button" value="Ver Dia" onclick="location='agenda-dia.php';"/>
 </form>
@@ -226,12 +172,12 @@ function obtenerCantidadCupos($hora, $matriz, $tipo, $fecha) {	//Contador de can
 			<tr>
 				<th rowspan=2 class="center scope="col"><img src="../assets/images/avatars/reloj.png"/></th>
 				
-				<th colspan=3 class="center scope="col">Lunes <?php echo $matrizSemana["Lunes"]; ?></th>
-				<th colspan=3 class="center scope="col">Martes <?php echo $matrizSemana["Martes"]; ?></th>
-				<th colspan=3 class="center scope="col">Miércoles <?php echo $matrizSemana["Miercoles"]; ?></th>
-				<th colspan=3 class="center scope="col">Jueves <?php echo $matrizSemana["Jueves"]; ?></th>
-				<th colspan=3 class="center scope="col">Viernes <?php echo $matrizSemana["Viernes"]; ?></th>
-				<th colspan=3 class="center scope="col">Sábado <?php echo $matrizSemana["Sabado"]; ?></th>
+				<th colspan=3 class="center scope="col">Lunes <?php echo formatFecha($matrizSemana["Lunes"], "normal"); ?></th>
+				<th colspan=3 class="center scope="col">Martes <?php echo formatFecha($matrizSemana["Martes"], "normal"); ?></th>
+				<th colspan=3 class="center scope="col">Miércoles <?php echo formatFecha($matrizSemana["Miercoles"], "normal"); ?></th>
+				<th colspan=3 class="center scope="col">Jueves <?php echo formatFecha($matrizSemana["Jueves"], "normal"); ?></th>
+				<th colspan=3 class="center scope="col">Viernes <?php echo formatFecha($matrizSemana["Viernes"], "normal"); ?></th>
+				<th colspan=3 class="center scope="col">Sábado <?php echo formatFecha($matrizSemana["Sabado"], "normal"); ?></th>
 			</tr>
 			<tr>
 				<td class="center scope="col"><img src="../assets/images/avatars/camilla.png"/></td> <td class="center scope="col"><img src="../assets/images/avatars/gim.png"/></td> <td class="center scope="col"><img src="../assets/images/avatars/reservar.png"/></td>
