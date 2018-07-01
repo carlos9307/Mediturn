@@ -482,7 +482,8 @@
 														<div class="form-actions center">
 
 															<input type="submit" class="btn btn-sm btn-success" value="Agregar">
-															<?php if (isset($_POST['desde'])) {
+															<?php  	
+															if (isset($_POST['desde'])) {
 																$consulta = "SELECT ID_JORNADA AS CANTIDAD FROM JORNADAS WHERE RELA_MEDICO = ".$_POST['medico']." AND DIA = '".$_POST['dia']."' AND HORA_DESDE = '".$_POST['desde']."' AND HORA_HASTA = '".$_POST['hasta']."';";
 																$resultado = consulta($consulta);
 																if($resultado != NULL) {
@@ -490,9 +491,12 @@
 																	$idjornada = $resultado[0]['ID_JORNADA'];
 																	$consulta = "UPDATE JORNADAS SET RELA_MEDICO = ".$_POST['medico']." AND DIA = '".$_POST['dia']."' AND HORA_DESDE = '".$_POST['desde']."' AND HORA_HASTA = '".$_POST['hasta']."' WHERE ID_JORNADA = ".$idjornada.";";
 																	modificarBD($consulta);
+																	echo "<script>alert('Jornada modificada correctamente');</script>";
 																} else {
 																//si es nuevo, guardar
-																$consulta = "INSERT INTO JORNADAS(RELA_MEDICO, DIA, HORA_DESDE, HORA_HASTA) VALUES(".$_POST['medico'].", '".$_POST['dia']."', '".$_POST['desde']."', '".$_POST['medico']."'');";
+																$consulta = "INSERT INTO JORNADAS(RELA_MEDICO, DIA, HORA_DESDE, HORA_HASTA) VALUES(".$_POST['medico'].", '".$_POST['dia']."', '".$_POST['desde']."', '".$_POST['hasta']."');";
+																modificarBD($consulta);
+																echo "<script>alert('Jornada cargada correctamente');</script>";
 																}
 															}
 															?>
