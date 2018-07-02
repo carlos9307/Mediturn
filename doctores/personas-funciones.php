@@ -1,7 +1,6 @@
 <?php 
 include ("calendario-funciones.php");
 
-
 function cargarTablaPacientes($claveBusqueda, $tipo){
 	if (isset($_GET['buscar'])) {
 		if($tipo == "dni") {

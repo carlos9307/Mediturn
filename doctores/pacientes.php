@@ -44,6 +44,9 @@
 	</head>
 <?php 
 include('personas-funciones.php');
+if (isset($_SESSION['fechaTurno'])) {
+	$_SESSION['fechaTurno'] == NULL;
+}
 /*$consulta = "SELECT ID_PERSONA, APELLIDO, PERSONAS.NOMBRE AS NOMBRE, FECHA_NAC, DNI, DIRECCION.DESCRIPCION, RELA_LOCALIDAD, LOCALIDAD.NOMBRE AS LOCALIDAD, O"
 consulta($);*/
  ?>
