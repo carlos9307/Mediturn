@@ -22,12 +22,14 @@
 						}
 
 						if ($_POST['telefono'] != null and ctype_digit($_POST['telefono'])) {
+
+							$telefono = $_POST['telefono'];
 							
-							if ($objcd->verificardatos('contactos','VALOR',$_POST['telefono']) == false) {//verifica que telefono ingresado no estee cargado
-								$telefono = $_POST['telefono'];
+							/*if ($objcd->verificardatos('contactos','VALOR',$_POST['telefono']) == false) {//verifica que telefono ingresado no estee cargado
+								
 							}else{
 								header('location: ..//doctores/pacientes-agregar.php?error=5');//el telefono ingresado ya pertenece a otra persona
-							}
+							}*/
 
 						}elseif ($_POST['telefono'] != null) {
 							header('location: ..//doctores/pacientes-agregar.php?error=6');//telefono ingresado tiene letras
@@ -90,7 +92,7 @@
 						$iddireccion = $objcd->cargardatos('direcciones',$datos=array("ID_DIRECCION"=>null,
 																	"RELA_LOCALIDAD"=>$idlocalidad,
 																	"DESCRIPCION"=>$direccion,
-																	),'SI');//cargamos en la tabla direcciones
+																	),'si');//cargamos en la tabla direcciones
 
 						$objcd->cargardatos('direccionxpersona',$datos=array("ID_DIRECCIONXPERSONA"=>null,
 																	"RELA_PERSONA"=>$idpersona,
@@ -120,7 +122,7 @@
 																	"RELA_TIPO_CONTACTO"=>$idtipocontacto,
 																	"VALOR"=>$email,
 																	),'');//cargamos en la tabla pacientes
-						}*/
+						}
 
 
 						if($_POST['creacuenta'] != null){//comprueba si se creara o no una cuenta
@@ -132,7 +134,7 @@
 																	"RELA_TIPO_CUENTA"=>'02',
 																	"USUARIO_NOMBRE"=>$dni,
 																	"CONTRASENA"=>$pass,
-																	));//cargamos usuario*/
+																	),'');//cargamos usuario*/
 
 							echo "SU CUENTA HA SIDO CREADA CON EXITTO".'<br>'."USUARIO:".$dni.'<br>'."CONTRASEÑA:".$pass;
 

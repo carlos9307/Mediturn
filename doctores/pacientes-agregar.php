@@ -43,7 +43,28 @@
 		<script src="assets/js/respond.min.js"></script>
 		<![endif]-->
 	</head>
-<?php include('personas-funciones.php'); ?>
+<?php include('personas-funciones.php');
+function personaModificado($id) {
+	$consulta = "SELECT ID_PERSONA, ID_PACIENTE, APELLIDO, NOMBRE, DNI, FECHA_NAC, SEXO, NUMERO_AFILIADO FROM PERSONAS JOIN PACIENTES ON ID_PERSONA = PACIENTES.RELA_PERSONA WHERE ID_PACIENTE = ".$id."";
+	return consulta($consulta);
+}
+
+function contactoModificado($id, $tipo) {
+	$consulta = "SELECT VALOR, ID_PACIENTE, DESCRIPCION_TIPO FROM CONTACTOS JOIN PERSONAS ON ID_PERSONA = CONTACTOS.RELA_PERSONA JOIN PACIENTES ON ID_PERSONA = PACIENTES.RELA_PERSONA JOIN TIPO_CONTACTO ON ID_TIPO_CONTACTO = RELA_TIPO_CONTACTO WHERE ID_PACIENTE = ".$id." AND DESCRIPCION_TIPO = ".$tipo;
+	$matrizR = consulta($consulta);
+	if ($matrizR != NULL) {
+		return $matrizR[0]['VALOR'];
+	}
+}
+
+function direccionModificado($id) {
+	$consulta = "SELECT DESCRIPCION AS DOMICILIO FROM DIRECCIONES JOIN PERSONAS ON ID_PERSONA = DIRECCIONES.RELA_PERSONA JOIN PACIENTES ON ID_PACIENTE = PACIENTES.RELA_PERSONA WHERE ID_PACIENTE = ".$id;
+	$matrizR = consulta($consulta);
+	if ($matrizR != NULL) {
+		return $matrizR[0]['DOMICILIO'];
+	}
+}
+ ?>
 	<body class="no-skin">
 		<div id="navbar" class="navbar navbar-default          ace-save-state">
 			<div class="navbar-container ace-save-state" id="navbar-container">
@@ -415,7 +436,12 @@
 
 													<form class="form-horizontal" id="validation-form" name="registropaciente" action="..//procesos/cargarpaciente.php" method="POST" role="form" >
 														<!-- <legend>Form</legend> -->
-														
+														<?php if(isset($_GET['id'])) {
+															$personaM = personaModificado($_GET['id']);
+															$email = contactoModificado($_GET['id'], 'email');
+															$telefono = contactoModificado($_GET['id'], 'telefono');
+															$direccion = direccionModificado($_GET['id']);
+															}?>
 														<fieldset>
 															<div class="form-group">
 																<?php if ($error == 1){ echo "El Apellido debe contener solo letras".'<br/>';	} ?>
@@ -423,7 +449,7 @@
 
 																<div class="col-xs-12 col-sm-9">
 																	<div class="clearfix">
-																		<input type="text" id="apellido" name="apellido" class="col-xs-12 col-sm-6" required/>
+																		<input type="text" id="apellido" name="apellido" class="col-xs-12 col-sm-6" <?php if (isset($personaM)) {echo "value = '".$personaM[0]['APELLIDO']."'";} ?> required/>
 																	</div>
 																</div>
 															</div>
@@ -434,7 +460,7 @@
 
 																<div class="col-xs-12 col-sm-9">
 																	<div class="clearfix">
-																		<input type="text" id="nombre" name="nombre" class="col-xs-12 col-sm-6" required/>
+																		<input type="text" id="nombre" name="nombre" class="col-xs-12 col-sm-6" <?php if (isset($personaM)) {echo "value = '".$personaM[0]['NOMBRE']."'";} ?> required/>
 																	</div>
 																</div>
 															</div>
@@ -444,7 +470,7 @@
 
 																<div class="col-xs-12 col-sm-9">
 																	<div class="input-group">																		
-																		<input type="date" id="fecha_nac" name="fechanac" required/>
+																		<input type="date" id="fecha_nac" name="fechanac" <?php if (isset($personaM)) {echo "value = '".date('Y-m-d', strtotime($personaM[0]['FECHA_NAC']))."'";} ?> required/>
 																	</div>
 																</div>
 															</div>
@@ -459,7 +485,7 @@
 
 																<div class="col-xs-12 col-sm-9">
 																	<div class="clearfix">
-																		<input type="text" id="dni" name="dni" required/>
+																		<input type="text" id="dni" name="dni" <?php if (isset($personaM)) {echo "value = '".$personaM[0]['DNI']."'";} ?> required/>
 																	</div>
 																</div>
 															</div>
@@ -472,10 +498,10 @@
 
 																<div class="col-xs-12 col-sm-9">
 																	<div class="clearfix">
-																		<input type="radio" name="sexo" value="hombre"/> Hombre
+																		<input type="radio" name="sexo" value="M" <?php if(isset($personaM) && $personaM[0]['SEXO'] == 'M') { echo "checked"; } ?>/> Hombre
 																	</div>
 																	<div class="clearfix">
-			  															<input type="radio" name="sexo" value="mujer"/> Mujer
+			  															<input type="radio" name="sexo" value="F" <?php if(isset($personaM) && $personaM[0]['SEXO'] == 'F') { echo "checked"; } ?> /> Mujer
 																	</div>
 																</div>
 															</div>
@@ -485,7 +511,7 @@
 
 																<div class="col-xs-12 col-sm-9">
 																	<div class="clearfix">
-																		<input type="text" id="direccion" name="direccion" class="col-xs-12 col-sm-6" />
+																		<input type="text" id="direccion" name="direccion" class="col-xs-12 col-sm-6" <?php if (isset($direccion)) {echo "value = '".$direccion."'";} ?> />
 																	</div>
 																</div>
 															</div>
@@ -517,7 +543,7 @@
 
 																<div class="col-xs-12 col-sm-9">
 																	<div class="input-group">																		
-																		<input name="telefono" class="input-medium input-mask-phone" type="text" id="form-field-phone" />
+																		<input name="telefono" type="text" id="form-field-phone" <?php if (isset($telefono)) {echo "value = '".$telefono."'";} ?>/>
 																	</div>
 																</div>
 															</div>
@@ -533,7 +559,7 @@
 
 																<div class="col-xs-12 col-sm-9">
 																	<div class="clearfix">
-																		<input type="email" name="email" id="email" class="col-xs-12 col-sm-6" />
+																		<input type="email" name="email" id="email" class="col-xs-12 col-sm-6" <?php if (isset($telefono)) {echo "value = '".$telefono."'";} ?> />
 																	</div>
 																</div>
 															</div>
@@ -569,7 +595,7 @@
 
 																<div class="col-xs-12 col-sm-9">
 																	<div class="clearfix">
-																		<input type="text" id="nro_afiliado" name="nafiliado" />
+																		<input type="text" id="nro_afiliado" name="nafiliado" <?php if (isset($personaM)) {echo "value = '".$personaM[0]['NUMERO_AFILIADO']."'";} ?> />
 																	</div>
 																</div>
 															</div>
@@ -577,11 +603,13 @@
 															<div class="form-group">
 																<label class="control-label col-xs-12 col-sm-3 no-padding-right" for="creacuenta">¿Desea Crear una Cuenta?</label>
 
+																<?php if (!(isset($_GET['id']))) { ?>
 																<div class="col-xs-12 col-sm-9">
 																	<div class="clearfix">
-																		<input type="checkbox" name="creacuenta" value="si"/> SI
+																		<input type="checkbox" name="creacuenta" value="si" selected/> SI
 																	</div>
 																</div>
+																<?php } ?>
 															</div>
 
 
