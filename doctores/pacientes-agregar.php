@@ -409,28 +409,32 @@
 
 											<div class="widget-body">
 												<div class="widget-main no-padding">
+													<?php 
+														$error = isset($_GET['error']) ? $_GET['error'] : null;
+													?>
 
-
-													<form class="form-horizontal" id="validation-form" method="get" role="form" >
+													<form class="form-horizontal" id="validation-form" name="registropaciente" action="..//procesos/cargarpaciente.php" method="POST" role="form" >
 														<!-- <legend>Form</legend> -->
 														
 														<fieldset>
 															<div class="form-group">
+																<?php if ($error == 1){ echo "El Apellido debe contener solo letras".'<br/>';	} ?>
 																<label class="control-label col-xs-12 col-sm-3 no-padding-right" for="apellido">Apellido:</label>
 
 																<div class="col-xs-12 col-sm-9">
 																	<div class="clearfix">
-																		<input type="text" id="apellido" name="apellido" class="col-xs-12 col-sm-6" />
+																		<input type="text" id="apellido" name="apellido" class="col-xs-12 col-sm-6" required/>
 																	</div>
 																</div>
 															</div>
 
 															<div class="form-group">
+																<?php if ($error == 2){ echo "El Nombre debe contener solo letras".'<br/>';	} ?>
 																<label class="control-label col-xs-12 col-sm-3 no-padding-right" for="nombre">Nombre:</label>
 
 																<div class="col-xs-12 col-sm-9">
 																	<div class="clearfix">
-																		<input type="text" id="nombre" name="nombre" class="col-xs-12 col-sm-6" />
+																		<input type="text" id="nombre" name="nombre" class="col-xs-12 col-sm-6" required/>
 																	</div>
 																</div>
 															</div>
@@ -440,17 +444,38 @@
 
 																<div class="col-xs-12 col-sm-9">
 																	<div class="input-group">																		
-																		<input type="date" id="fecha_nac" name="fecha_nac" />
+																		<input type="date" id="fecha_nac" name="fechanac" required/>
 																	</div>
 																</div>
 															</div>
 
 															<div class="form-group">
+																<?php if ($error == 4){ 
+																	echo "El DNI tiene caracteres incorrectos".'<br/>';	
+																  }elseif($error == 3){ 
+																  	echo "Este DNI ya ha sido registrado".'<br/>';	
+																  } ?>
 																<label class="control-label col-xs-12 col-sm-3 no-padding-right" for="dni">DNI:</label>
 
 																<div class="col-xs-12 col-sm-9">
 																	<div class="clearfix">
-																		<input type="text" id="dni" name="dni" />
+																		<input type="text" id="dni" name="dni" required/>
+																	</div>
+																</div>
+															</div>
+
+
+															<div class="form-group">
+																<label class="control-label col-xs-12 col-sm-3 no-padding-right" for="sexo">Sexo:</label>
+
+																<?php if ($error == 12){ echo "Debe seleccionar su sexo".'<br/>';	} ?>
+
+																<div class="col-xs-12 col-sm-9">
+																	<div class="clearfix">
+																		<input type="radio" name="sexo" value="hombre"/> Hombre
+																	</div>
+																	<div class="clearfix">
+			  															<input type="radio" name="sexo" value="mujer"/> Mujer
 																	</div>
 																</div>
 															</div>
@@ -470,28 +495,40 @@
 
 																<div class="col-xs-12 col-sm-9">	
 																	<div class="input-group">																			
-																		<select class="form-control" id="localidad" name="localidad" >
-																			<option value="">Seleccionar Localidad</option>
-																			<option value="1">Localidad 1</option>
-																			<option value="2">Localidad 2</option>
-																			<option value="3">Localidad 3</option>
-																			<option value="4">Localidad 4</option>
+																		<select class="form-control" id="localidad" name="codpostal" required >
+																			<OPTION VALUE="">SELECCIONE SU CIUDAD</OPTION>
+																			<OPTION VALUE="3600">Formosa</OPTION>
+																			<OPTION VALUE="5000">Clorinda</OPTION>
+																			<OPTION VALUE="5001">Nueva York</OPTION>
+																			<OPTION VALUE="5002">Paris</OPTION> 
 																		</select>	
 																	</div>															
 																</div>
 															</div>
 
 															<div class="form-group">
+
+																<?php if ($error == 6){ 
+																	echo "El telefono ingresado tiene caracteres incorrectos".'<br/>';	
+																  }elseif($error == 5){ 
+																  	echo "Este telefono ya esta registrado".'<br/>';	
+																  } ?>
 																<label class="control-label col-xs-12 col-sm-3 no-padding-right" for="form-field-phone">Telefono:</label>
 
 																<div class="col-xs-12 col-sm-9">
 																	<div class="input-group">																		
-																		<input class="input-medium input-mask-phone" type="text" id="form-field-phone" />
+																		<input name="telefono" class="input-medium input-mask-phone" type="text" id="form-field-phone" />
 																	</div>
 																</div>
 															</div>
 
 															<div class="form-group">
+
+																	<?php if ($error == 8){ 
+																		echo "El Email ingresado tiene caracteres incorrectos".'<br/>';	
+																	  }elseif($error == 7){ 
+																	  	echo "Este Email ya esta registrado".'<br/>';	
+																	  } ?>
 																<label class="control-label col-xs-12 col-sm-3 no-padding-right" for="email">Email:</label>
 
 																<div class="col-xs-12 col-sm-9">
@@ -507,12 +544,11 @@
 
 																<div class="col-xs-12 col-sm-9">	
 																	<div class="input-group">																			
-																		<select class="form-control" id="obra_social" name="obra_social" >
-																			<option value="">Seleccionar Obra Social</option>
-																			<option value="1">Obra Social 1</option>
-																			<option value="2">Obra Social 2</option>
-																			<option value="3">Obra Social 3</option>
-																			<option value="4">Obra Social 4</option>
+																		<select class="form-control" id="obra_social" name="os" >
+																			<OPTION VALUE="Sin Obra Social">Sin Obra Social</OPTION>
+																			<OPTION VALUE="PAMI">PAMI</OPTION>
+																			<OPTION VALUE="SWISSMEDICAL">SWISSMEDICAL</OPTION>
+																			<OPTION VALUE="OSPLAT">OSPLAT</OPTION> 
 																		</select>	
 																	</div>															
 																</div>
@@ -520,11 +556,30 @@
 
 															
 															<div class="form-group">
+
+																<?php if ($error == 9){ 
+																	echo "El numero de afiliado ingresado ya esta registrado".'<br/>';	
+																  }elseif($error == 10){
+																  	echo "El numero ingresado contiene caracteres invalidos".'<br/>';	
+																  }elseif($error == 11){
+																  	echo "Porfavor ingresar numero de afiliado ".'<br/>';
+																  } ?>
+
 																<label class="control-label col-xs-12 col-sm-3 no-padding-right" for="nro_afiliado">Nro Afiliado:</label>
 
 																<div class="col-xs-12 col-sm-9">
 																	<div class="clearfix">
-																		<input type="text" id="nro_afiliado" name="nro_afiliado" />
+																		<input type="text" id="nro_afiliado" name="nafiliado" />
+																	</div>
+																</div>
+															</div>
+
+															<div class="form-group">
+																<label class="control-label col-xs-12 col-sm-3 no-padding-right" for="creacuenta">¿Desea Crear una Cuenta?</label>
+
+																<div class="col-xs-12 col-sm-9">
+																	<div class="clearfix">
+																		<input type="checkbox" name="creacuenta" value="si"/> SI
 																	</div>
 																</div>
 															</div>
@@ -537,7 +592,7 @@
 
 														<div class="form-actions center">
 
-															<a href="#" class="btn btn-sm btn-success"> <i class="ace-icon glyphicon glyphicon-ok "></i>Agregar</a>
+															<input type="submit" name="registropac" href="#" class="btn btn-sm btn-success" value="Agregar" class="ace-icon glyphicon glyphicon-ok "><br/>
 
 															<a href="pacientes.php" class="btn btn-sm btn-danger"> <i class="ace-icon glyphicon glyphicon-remove "></i>Cancelar</a>	
 
