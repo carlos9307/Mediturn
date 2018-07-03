@@ -1,7 +1,6 @@
 <?php
 include('funciones.php');
 //Variables y Arrays
-$_SESSION['perfil'] = "Administrador";
 $GLOBALS['MaximoCamillas'] = 4;
 $GLOBALS['MaximoGimnasio'] = 6;
 //array con los horarios, de simulacro

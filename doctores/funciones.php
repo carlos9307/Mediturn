@@ -36,4 +36,11 @@
 			echo "<option value=".$id.">".$columna."</option>";
 		}
 	}
+
+	function iniciar_sesion($usuario, $perfil, $id) {
+		SESSION_START();
+		$_SESSION['usuario'] = $usuario;
+		$_SESSION['perfil'] = $perfil;
+		$_SESSION['idusuario'] = $id;
+	}
 ?>

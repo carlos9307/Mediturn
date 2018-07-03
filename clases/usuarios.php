@@ -1,5 +1,5 @@
 <?php 
-	
+	include_once('../doctores/calendario-funciones.php');
 	require_once("coneccion.php");
 	require_once("sesiones.php");
 
@@ -63,8 +63,9 @@
 					$this->objses->guardarses('sexo','Mujer');
 				}
 
-				header("location: ..//doctores/index.html");
-				
+				header("location: ../doctores/index.php");
+				$nombreUser = $this->result[0]['Nombre']." ".$this->result[0]['Apellido'];
+				Iniciar_Sesion($nombreUser, $perfil, $id);
 				/*switch ($_SESSION['tipo_cuenta']){
 					case "Administrador":
 						header('..//doctores/index.html');//nos lleva a pagina de usuarios comunes
