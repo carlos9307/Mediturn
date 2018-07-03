@@ -33,9 +33,11 @@
 					$this->loguear();
 				}else{
 					header('location: ..//login/login.php?error=2');;//si la contraseña es incorrecta volvera al login
+					exit;
 				}
 			}else{
 				header('location: ..//login/login.php?error=1');//SI EL USUARIO NO ESTA REDIRIGE AL LOGIN
+				exit;
 			}
 		}
 			
@@ -62,20 +64,20 @@
 				}elseif ($this->result[0]['Sexo'] == 'F') {
 					$this->objses->guardarses('sexo','Mujer');
 				}
+				echo $_SESSION['tipo_cuenta'];
 
-				header("location: ..//doctores/index.html");
+				if ($_SESSION['tipo_cuenta'] =="Administrador") {
+					header('location: ..//doctores/index.php');//nos lleva a la pagina de usuarios administradores
+					exit;
+				}elseif ($_SESSION['tipo_cuenta'] == "Paciente") {
+					header('location: ..//pacientes/index.php');//nos lleva a pagina de usuarios comunes
+					exit;
+				}
 				
-				/*switch ($_SESSION['tipo_cuenta']){
-					case "Administrador":
-						header('..//doctores/index.html');//nos lleva a pagina de usuarios comunes
-						break;
-					case 'Paciente':
-						header('');//nos lleva a la pagina de usuarios administradores
-						break;
-				}*/
 			}
 			else{
 				header('location: ..//login/login.php?error=1');//si no hay datos encontrados nos lo dira
+				exit;
 			}
 
 		}

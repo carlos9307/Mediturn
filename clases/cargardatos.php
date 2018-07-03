@@ -44,11 +44,14 @@
 			}
 		}
 
-		public function cargardatos($tabla,$datos){//carga los datos en la tabla
+		public function cargardatos($tabla,$datos,$devolverid){//carga los datos en la tabla
 
 			$this->objbd->beginTransaction();
 			$id= $this->abm->insert($tabla,$datos);
 			$this->objbd->commit();
+			if ($devolverid == 'si') {
+				return $id;
+			}
 				
 		}
 

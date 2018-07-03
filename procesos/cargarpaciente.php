@@ -19,18 +19,23 @@
 
 						if ($_POST['sexo'] == null) {
 							header('location: ..//doctores/pacientes-agregar.php?error=12');
+							exit;
 						}
-
 						if ($_POST['telefono'] != null and ctype_digit($_POST['telefono'])) {
+
+							$telefono = $_POST['telefono'];
 							
-							if ($objcd->verificardatos('contactos','VALOR',$_POST['telefono']) == false) {//verifica que telefono ingresado no estee cargado
-								$telefono = $_POST['telefono'];
+							/*if ($objcd->verificardatos('contactos','VALOR',$_POST['telefono']) == false) {//verifica que telefono ingresado no estee cargado
+								
 							}else{
 								header('location: ..//doctores/pacientes-agregar.php?error=5');//el telefono ingresado ya pertenece a otra persona
-							}
+								exit;
+							}*/
 
 						}elseif ($_POST['telefono'] != null) {
 							header('location: ..//doctores/pacientes-agregar.php?error=6');//telefono ingresado tiene letras
+							exit;
+
 						}
 
 
@@ -41,10 +46,12 @@
 								$email = $_POST['email'];
 							}else{
 								header('location: ..//doctores/pacientes-agregar.php?error=7');//el email ingresado esta asociado a una persona
+								exit;
 							}
 
 						}elseif ($_POST['email'] != null) {
 							header('location: ..//doctores/pacientes-agregar.php?error=8');//email fue mal introducido
+							exit;
 						}
 
 						if ($_POST['os'] != 'Sin Obra Social' and $_POST['nafiliado']!= null and ctype_digit($_POST['nafiliado'])) {
@@ -57,12 +64,15 @@
 
 							}else{
 								header('location: ..//doctores/pacientes-agregar.php?error=9');//el numero de afiliado ingresado esta asociado a una persona
+								exit;
 							}
 
 						}elseif ($_POST['os'] != 'Sin Obra Social' and $_POST['nafiliado']!= null) {//si ingreso obra social pero ingreso mal el numero de afiliado
 							header('location: ..//doctores/pacientes-agregar.php?error=10');
+							exit;
 						}elseif ($_POST['os'] != 'Sin Obra Social'and $_POST['nafiliado']== null) { //selecciono obra social pero no ingreso numero de afiliado
 							header('location: ..//doctores/pacientes-agregar.php?error=11');
+							exit;
 						}
 
 						if ($_POST['direccion'] != null) {//verificamos si agrego una direccion
@@ -90,7 +100,7 @@
 						$iddireccion = $objcd->cargardatos('direcciones',$datos=array("ID_DIRECCION"=>null,
 																	"RELA_LOCALIDAD"=>$idlocalidad,
 																	"DESCRIPCION"=>$direccion,
-																	),'SI');//cargamos en la tabla direcciones
+																	),'si');//cargamos en la tabla direcciones
 
 						$objcd->cargardatos('direccionxpersona',$datos=array("ID_DIRECCIONXPERSONA"=>null,
 																	"RELA_PERSONA"=>$idpersona,
@@ -119,8 +129,8 @@
 																	"RELA_PERSONA"=>$idpersona,
 																	"RELA_TIPO_CONTACTO"=>$idtipocontacto,
 																	"VALOR"=>$email,
-																	),'');//cargamos en la tabla pacientes
-						}*/
+																	),'');//cargamos en la tabla pacientes*/
+						}
 
 
 						if($_POST['creacuenta'] != null){//comprueba si se creara o no una cuenta
@@ -132,7 +142,7 @@
 																	"RELA_TIPO_CUENTA"=>'02',
 																	"USUARIO_NOMBRE"=>$dni,
 																	"CONTRASENA"=>$pass,
-																	));//cargamos usuario*/
+																	),'');//cargamos usuario
 
 							echo "SU CUENTA HA SIDO CREADA CON EXITTO".'<br>'."USUARIO:".$dni.'<br>'."CONTRASEÑA:".$pass;
 
@@ -141,18 +151,23 @@
 
 					}elseif (ctype_digit($_POST['dni']) and $objcd->verificardatos('personas','DNI',$_POST['dni']) == true){
 						header('location: ..//doctores/pacientes-agregar.php?error=3');//dni ya pertenece a aguien
+						exit;
 					}else{
 						header('location: ..//doctores/pacientes-agregar.php?error=4');//dni tiene caracteres incorrectos
+						exit;
 					}
 				}else{
 					header('location: ..//doctores/pacientes-agregar.php?error=2');//nombre con numeros
+					exit;
 				}
 			}else{
 				header('location: ..//doctores/pacientes-agregar.php?error=1');//apellido tiene numeros
+				exit;
 			}
 
 		}else{
 			header("location: ..//doctores/pacientes-agregar.php");//si no fue enviado el formulario
+			exit;
 		}
 
 	?>
