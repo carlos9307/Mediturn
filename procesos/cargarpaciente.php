@@ -29,7 +29,10 @@
 								
 							}else{
 								header('location: ..//doctores/pacientes-agregar.php?error=5');//el telefono ingresado ya pertenece a otra persona
+<<<<<<< HEAD
 								exit;
+=======
+>>>>>>> 89c22f7ed42727c0b90c5670f033438a4dd2b902
 							}*/
 
 						}elseif ($_POST['telefono'] != null) {
@@ -129,7 +132,11 @@
 																	"RELA_PERSONA"=>$idpersona,
 																	"RELA_TIPO_CONTACTO"=>$idtipocontacto,
 																	"VALOR"=>$email,
+<<<<<<< HEAD
 																	),'');//cargamos en la tabla pacientes*/
+=======
+																	),'');//cargamos en la tabla pacientes
+>>>>>>> 89c22f7ed42727c0b90c5670f033438a4dd2b902
 						}
 
 
@@ -142,7 +149,11 @@
 																	"RELA_TIPO_CUENTA"=>'02',
 																	"USUARIO_NOMBRE"=>$dni,
 																	"CONTRASENA"=>$pass,
+<<<<<<< HEAD
 																	),'');//cargamos usuario
+=======
+																	),'');//cargamos usuario*/
+>>>>>>> 89c22f7ed42727c0b90c5670f033438a4dd2b902
 
 							echo "SU CUENTA HA SIDO CREADA CON EXITTO".'<br>'."USUARIO:".$dni.'<br>'."CONTRASEÑA:".$pass;
 

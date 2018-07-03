@@ -7,7 +7,7 @@ if($_POST['idpaciente'] != "") {
 
 //realizo el insert
 cargarTurno($_POST['fechaturno'], $_POST['horario'], $_POST['idpaciente'], $_POST['patologia'], $_POST['tiposesion']);
-
+$_SESSION['fechaTurno'] = NULL;
 //traer datos del turno agregado 
 $consulta="SELECT ID_TURNO FROM TURNOS WHERE RELA_PACIENTE = ".$_POST['idpaciente']." AND FECHA_TURNO = '".$_POST['fechaturno']."' AND HORA_TURNO = '".$_POST['horario']."'";
 $arrayTurno = consulta($consulta);

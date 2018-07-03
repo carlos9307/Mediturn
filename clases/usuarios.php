@@ -1,5 +1,5 @@
 <?php 
-	
+	include_once('../doctores/calendario-funciones.php');
 	require_once("coneccion.php");
 	require_once("sesiones.php");
 
@@ -66,6 +66,7 @@
 				}
 				echo $_SESSION['tipo_cuenta'];
 
+<<<<<<< HEAD
 				if ($_SESSION['tipo_cuenta'] =="Administrador") {
 					header('location: ..//doctores/index.php');//nos lleva a la pagina de usuarios administradores
 					exit;
@@ -74,6 +75,19 @@
 					exit;
 				}
 				
+=======
+				header("location: ../doctores/index.php");
+				$nombreUser = $this->result[0]['Nombre']." ".$this->result[0]['Apellido'];
+				Iniciar_Sesion($nombreUser, $perfil, $id);
+				/*switch ($_SESSION['tipo_cuenta']){
+					case "Administrador":
+						header('..//doctores/index.html');//nos lleva a pagina de usuarios comunes
+						break;
+					case 'Paciente':
+						header('');//nos lleva a la pagina de usuarios administradores
+						break;
+				}*/
+>>>>>>> 89c22f7ed42727c0b90c5670f033438a4dd2b902
 			}
 			else{
 				header('location: ..//login/login.php?error=1');//si no hay datos encontrados nos lo dira

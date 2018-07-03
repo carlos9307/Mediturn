@@ -154,7 +154,7 @@ function obtenerCantidadCupos($hora, $matriz, $tipo, $fecha) {	//Contador de can
 <body>
 
 <form>
-	<input type="button" value="Ver Mes" / onclick="location='calendario.php';">
+	<input type="button" value="Ver Mes" / onclick="location='calendario.html';">
 	<input type="button" value="Ver Semana" onclick="location='agenda-semana.php';" />
 	<input type="button" value="Ver Dia" onclick="location='agenda-dia.php';"/>
 </form>

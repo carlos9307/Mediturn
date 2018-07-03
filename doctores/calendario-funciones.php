@@ -1,10 +1,8 @@
 <?php
 include('funciones.php');
 //Variables y Arrays
-$_SESSION['perfil'] = "Administrador";
 $GLOBALS['MaximoCamillas'] = 4;
 $GLOBALS['MaximoGimnasio'] = 6;
-
 //array con los horarios, de simulacro
 /*$horarioActual = array("20:00"=>array("camilla"=>"4", "gimnasio"=>"0", "patologia"=>"Dolor de Espalda", "dia"=>"18-05-2018"), 
 				  "21:00"=>array("camilla"=>"4", "gimnasio"=>"6", "patologia"=>"Lumbalgia", "dia"=>"17-05-2018"),
