@@ -35,7 +35,7 @@ function botonesRegistro($idRegistro, $tabla) { //Funcion para mostrar los boton
 	echo "<div class='hidden-sm hidden-xs action-buttons'>",
 				"<a class='orange' href='pacientes-agregar.php?id=".$idRegistro."&tabla=".$tabla."'>",
 				"<i class='ace-icon glyphicon glyphicon-pencil bigger-130'></i></a>";
-	echo "<a class='red' href='eliminar.php?id=".$idRegistro."&tabla=".$tabla."' onClick=\"return confirm('¿Borrar el registro del paciente?')\">",
+	echo "<a class='red' href='abm-estandar.php?idpaciente=".$idRegistro."&tipo=borrar' onClick=\"return confirm('¿Borrar el registro del paciente?')\">",
 		"<i class='ace-icon glyphicon glyphicon-trash bigger-130'></i></a>",
 		"</div>";
 											      	
@@ -85,4 +85,35 @@ function cargarTurnosparaHoy() {
 		echo "<tr><td colspan=5>Sin turnos</td></tr>";
 	}
 }
+
+function cargar_comboLocalidad($modFiltro) {
+	$localidades = consulta("SELECT ID_LOCALIDAD, NOMBRE FROM LOCALIDADES");
+	foreach($localidades as $registro=>$campo) {
+		if($modFiltro != "") {
+			if($campo['LOCALIDAD_NOMBRE'] == $modFiltro) {
+				echo "<option value='".$campo['ID_LOCALIDAD']."' selected>".$campo['NOMBRE']."</option>";
+			} else {
+				echo "<option value='".$campo['ID_LOCALIDAD']."' >".$campo['NOMBRE']."</option>";
+			}
+		} else { 
+			echo "<option value=".$campo['ID_LOCALIDAD']." >".$campo['NOMBRE']."</option>";
+		}
+	}
+	
+}
+
+function cargar_comboObrasocial($modFiltro) {
+	$obraSocial = consulta("SELECT ID_OBRA_SOCIAL, DESCRIPCION_OS FROM OBRAS_SOCIALES");
+	foreach($obraSocial as $registro=>$campo) {
+		if($modFiltro != "") {
+			if($campo['DESCRIPCION_OS'] == $modFiltro) {
+				echo "<option value=".$campo['ID_OBRA_SOCIAL']." selected>".$campo['DESCRIPCION_OS']."</option>";
+			}
+		} else {
+			echo "<option value=".$campo['ID_OBRA_SOCIAL'].">".$campo['DESCRIPCION_OS']."</option>";
+		}
+	}
+}	
+
+
 ?>

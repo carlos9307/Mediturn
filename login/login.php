@@ -42,7 +42,7 @@
 						<div class="login-container">
 							<div class="center">
 								<h1>
-									<i class="ace-icon fa fa-calendar blue"></i>
+									<img class="nav-user-photo" src="../assets/images/avatars/doctor-calendar.png"/>
 									<span class="red">Turno</span><span class="white" id="id-text2">Medic</span>
 								</h1>
 								<!--<h4 class="blue" id="id-company-text">&copy; Company Name</h4>-->

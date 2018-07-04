@@ -150,11 +150,13 @@ function obtenerCantidadCupos($hora, $matriz, $tipo, $fecha) {	//Contador de can
 	}
 	return $contador;
 }
+
+if ($_SESSION['perfil'] == "Administrador") { 
 ?>
 <body>
 
 <form>
-	<input type="button" value="Ver Mes" / onclick="location='calendario.html';">
+	<input type="button" value="Ver Mes" / onclick="location='calendario.php';">
 	<input type="button" value="Ver Semana" onclick="location='agenda-semana.php';" />
 	<input type="button" value="Ver Dia" onclick="location='agenda-dia.php';"/>
 </form>
@@ -198,6 +200,8 @@ function obtenerCantidadCupos($hora, $matriz, $tipo, $fecha) {	//Contador de can
 </form>
 
 
-
+<?php } else { 
+			echo "<div style='font-size: 24px; text-align: center; color: #F30808'>Acceso Restringido</div>";
+		} ?>
 </body>
 </html>

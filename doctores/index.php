@@ -53,7 +53,8 @@
 			}	
 		</style>
 	</head>
-<?php include('personas-funciones.php');?>
+<?php include('personas-funciones.php');
+if ($_SESSION['perfil'] == "Administrador") { ?>
 	<body class="no-skin">
 		<div id="navbar" class="navbar navbar-default          ace-save-state">
 			<div class="navbar-container ace-save-state" id="navbar-container">
@@ -80,7 +81,7 @@
 				<div class="navbar-header pull-right" role="navigation">
 					<img class="nav-user-photo" src="../assets/images/avatars/doctor.png"/>
 					<span class="white">Bienvenido, </span>
-					<span class="white">NOMBRE USUARIO</span>
+					<span class="white"><?php echo $_SESSION['usuario']; ?></span>
 				</div>
 
 			</div><!-- /.navbar-container -->
@@ -111,7 +112,7 @@
 							<i class="ace-icon glyphicon glyphicon-ok"></i>
 						</button>
 
-						<button class="btn btn-danger">
+						<button class="btn btn-danger" onclick="window.location='../login/logout.php'">
 							<i class="ace-icon glyphicon glyphicon-log-out"></i>
 						</button>
 					</div>
@@ -144,7 +145,7 @@
 					<!-- MENU TURNOS-->
 
 					<li class="">
-						<a href="turnos-disponibles.html">
+						<a href="turnos-disponibles.php">
 							<i class="menu-icon fa fa-calendar"></i>
 							<span class="menu-text"> Turnos Disponibles </span>
 
@@ -457,7 +458,7 @@
 				<div class="footer-inner">
 					<div class="footer-content">
 						<span class="bigger-120">
-							<span class="blue bolder">Nombre Aplicacion</span>
+							<span class="blue bolder">TurnoMedic</span>
 							V.1.0 &copy; 2018 
 						</span>
 
@@ -507,5 +508,8 @@
 		<script src="../assets/js/ace.min.js"></script>
 
 		<!-- inline scripts related to this page -->
+		<?php } else { 
+			echo "<div style='font-size: 24px; text-align: center; color: #F30808'>Acceso Restringido</div>";
+		} ?>
 	</body>
 </html>

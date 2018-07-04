@@ -65,6 +65,16 @@
 					$this->objses->guardarses('sexo','Mujer');
 				}
 				echo $_SESSION['tipo_cuenta'];
+				
+				//Armar nombre y apellido
+				$fname =  $this->result[0]['Nombre'];
+				$surname = $this->result[0]['Apellido'];
+				$userName = $fname." ".$surname;
+				//Obtener ID usuario
+				$userID = consulta("SELECT ID_USUARIO FROM USUARIOS WHERE USUARIO_NOMBRE ='".$this->result[0]['USUARIO_NOMBRE']."'");
+				
+				//Iniciar Sesion
+				iniciar_sesion($userName, $_SESSION['tipo_cuenta'], $userID[0]['ID_USUARIO']);
 
 				if ($_SESSION['tipo_cuenta'] =="Administrador") {
 					header('location: ..//doctores/index.php');//nos lleva a la pagina de usuarios administradores

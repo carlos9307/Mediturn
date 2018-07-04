@@ -43,4 +43,8 @@
 		$_SESSION['perfil'] = $perfil;
 		$_SESSION['idusuario'] = $id;
 	}
+
+	function cerrar_sesion() {
+		session_unset();
+	}
 ?>

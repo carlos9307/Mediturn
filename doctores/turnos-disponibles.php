@@ -3,7 +3,7 @@
 	<head>
 		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
 		<meta charset="utf-8" />
-		<title>Agregar Horario</title>
+		<title>Turnos Disponibles</title>
 
 		<meta name="description" content="" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
@@ -34,7 +34,6 @@
 
 		<!-- ace settings handler -->
 		<script src="../assets/js/ace-extra.min.js"></script>
-		<script type="text/javascript" src="../assets/js/jquery-2.1.4.min"></script>
 
 		<!-- HTML5shiv and Respond.js for IE8 to support HTML5 elements and media queries -->
 
@@ -43,10 +42,11 @@
 		<script src="assets/js/respond.min.js"></script>
 		<![endif]-->
 	</head>
-<?php include('personas-funciones.php');
-if ($_SESSION['perfil'] == "Administrador") { ?>
-?>
+
 	<body class="no-skin">
+	<?php 
+	include_once('calendario-funciones.php');
+	?>
 		<div id="navbar" class="navbar navbar-default          ace-save-state">
 			<div class="navbar-container ace-save-state" id="navbar-container">
 				<button type="button" class="navbar-toggle menu-toggler pull-left" id="menu-toggler" data-target="#sidebar">
@@ -134,7 +134,7 @@ if ($_SESSION['perfil'] == "Administrador") { ?>
 					</li>
 
 					<!-- MENU TURNOS-->
-					<li class="">
+					<li class="active">
 						<a href="turnos-disponibles.php">
 							<i class="menu-icon fa fa-calendar"></i>
 							<span class="menu-text"> Turnos Disponibles </span>
@@ -144,28 +144,18 @@ if ($_SESSION['perfil'] == "Administrador") { ?>
 					</li>
 
 					<!--MENU PACIENTES-->
-
 					<li class="">
 						<a href="pacientes.php">
 							<i class="menu-icon fa fa-users"></i>
 							<span class="menu-text"> Pacientes </span>
+
+							<b class="arrow"></b>
 						</a>
 
-						<b class="arrow"></b>
-					</li>
-
-					<!--<li class="active open">
-						<a href="#" class="dropdown-toggle">
-							<i class="menu-icon fa fa-users"></i>
-							<span class="menu-text"> Pacientes </span>
-
-							<b class="arrow fa fa-angle-down"></b>
-						</a>
-
-						<b class="arrow"></b>
+						<!--<b class="arrow"></b>
 
 						<ul class="submenu">
-							<li class="active">
+							<li class="">
 								<a href="pacientes.html">
 									<i class="menu-icon fa fa-caret-right"></i>
 									Agregar Paciente
@@ -182,9 +172,12 @@ if ($_SESSION['perfil'] == "Administrador") { ?>
 
 								<b class="arrow"></b>
 							</li>
-						</ul>
-					</li>-->
+						</ul>-->
+
+					</li>
 					
+					
+
 					<!--MENU REPORTES-->
 					<li class="">
 						<a href="#" class="dropdown-toggle">
@@ -232,7 +225,7 @@ if ($_SESSION['perfil'] == "Administrador") { ?>
 						<b class="arrow"></b>
 
 						<ul class="submenu">
-							<li class="active">
+							<li class="">
 								<a href="#" class="dropdown-toggle">
 									<i class="menu-icon fa fa-caret-right"></i>
 
@@ -243,7 +236,7 @@ if ($_SESSION['perfil'] == "Administrador") { ?>
 								<b class="arrow"></b>
 
 								<ul class="submenu">
-									<li class="open">
+									<li class="">
 										<a href="#">
 											<i class="menu-icon fa fa-caret-right"></i>
 											Feriados
@@ -252,7 +245,7 @@ if ($_SESSION['perfil'] == "Administrador") { ?>
 										<b class="arrow"></b>
 									</li>
 
-									<li class="active">
+									<li class="">
 										<a href="#">
 											<i class="menu-icon fa fa-caret-right"></i>
 											Horarios
@@ -354,11 +347,11 @@ if ($_SESSION['perfil'] == "Administrador") { ?>
 
 							</li>
 
-							<li>
-								<a href="Horarios.php">Horarios</a>
-							</li>
+							<!--<li>
+								<a href="#">Other Pages</a>
+							</li>-->
 
-							<li class="active">Agregar Horario</li>
+							<li class="active">Turnos Disponibles</li>
 						</ul><!-- /.breadcrumb -->
 					</div>
 
@@ -389,151 +382,56 @@ if ($_SESSION['perfil'] == "Administrador") { ?>
 										</label>
 									</div>
 								</div><!-- /.pull-left -->
-						
-							</div><!-- /.ace-settings-box -->
-						</div><!-- /.ace-settings-container -->
-					
-						<div class="page-header">
-							<h1>
-								Agregar Horario
-							</h1>
-						</div><!-- /.page-header -->
 
+						    </div><!-- /.ace-settings-box -->
+					 	</div><!-- /.ace-settings-container -->
 
 						<div class="row">
 							<div class="col-xs-12">
-
-									<!-- PAGE CONTENT BEGINS -->
-									<div class="widget-box">
-											<div class="widget-header">
-												<h4 class="widget-title">Datos del Horario</h4>
-											</div>
-
-											<div class="widget-body">
-												<div class="widget-main no-padding">
+								<!-- PAGE CONTENT BEGINS -->
 
 
-													<form class="form-horizontal" id="validation-form" method="post" role="form" >
-														<!-- <legend>Form</legend> -->
-														
-														<fieldset>
+								<div id="faq-list-1" class="panel-group accordion-style1 accordion-style2">
+									<div class="panel panel-default">
+										<div class="panel-heading">
+											<a href="#faq-1-1" data-parent="#faq-list-1" data-toggle="collapse" class="accordion-toggle collapsed">
+												<i class="ace-icon fa fa-chevron-left pull-right" data-icon-hide="ace-icon fa fa-chevron-down" data-icon-show="ace-icon fa fa-chevron-left"></i>
 
-															<div class="form-group">
-																<label class="control-label col-xs-12 col-sm-3 no-padding-right" for="localidad">Medico:</label>
-
-																<div class="col-xs-12 col-sm-9">	
-																	<div class="input-group">																			
-																		<select class="form-control" id="medico" name="medico" >
-																			<?php 
-																			$query="SELECT id_medico, rela_persona, nombre, apellido FROM personas, medicos where id_persona=id_medico ORDER BY apellido";
-																			$result = consulta($query);
-																			echo '<option value="0">Seleccionar</option>';
-																			foreach($result as $registro=>$campo) {
-																			    echo '<option value="'.$campo["id_medico"].'">'.$campo["apellido"].' '.$campo['nombre'].'</option>';
-																			}
-
-																			?>
-																		</select>		
-																	</div>
-																</div>
-															</div>
-
-
-															<div class="form-group">
-																<label class="control-label col-xs-12 col-sm-3 no-padding-right" for="dni">Dia:</label>
-
-																<div class="col-xs-12 col-sm-9">
-																	<div class="clearfix" style="width: 130px;">
-																		<select class="form-control" id="dia" name="dia" >
-																		<option value="Lunes">Lunes</option>
-																		<option value="Martes">Martes</option>
-																		<option value="Miercoles">Miercoles</option>
-																		<option value="Jueves">Jueves</option>
-																		<option value="Viernes">Viernes</option>
-																		<option value="Sabado">Sabado</option>
-																	</select>	
-																	</div>
-																</div>
-															</div>
-
-															
-															<div class="form-group">
-																<label class="control-label col-xs-12 col-sm-3 no-padding-right" for="dni">Desde:</label>
-
-																<div class="col-xs-12 col-sm-9">
-																	<div class="clearfix">
-																		<input type="text" id="desde" name="desde" />
-																	</div>
-																</div>
-															</div>
-
-															<div class="form-group">
-																<label class="control-label col-xs-12 col-sm-3 no-padding-right" for="dni">Hasta:</label>
-
-																<div class="col-xs-12 col-sm-9">
-																	<div class="clearfix">
-																		<input type="text" id="hasta" name="hasta" />
-																	</div>
-																</div>
-															</div>
-															
-															
-														</fieldset>
-
-
-														<div class="form-actions center">
-
-															<input type="submit" class="btn btn-sm btn-success" value="Agregar">
-															<?php  	
-															if (isset($_POST['desde'])) {
-																$consulta = "SELECT ID_JORNADA AS CANTIDAD FROM JORNADAS WHERE RELA_MEDICO = ".$_POST['medico']." AND DIA = '".$_POST['dia']."' AND HORA_DESDE = '".$_POST['desde']."' AND HORA_HASTA = '".$_POST['hasta']."';";
-																$resultado = consulta($consulta);
-																if($resultado != NULL) {
-																	//si no es nuevo, editar
-																	$idjornada = $resultado[0]['ID_JORNADA'];
-																	$consulta = "UPDATE JORNADAS SET RELA_MEDICO = ".$_POST['medico']." AND DIA = '".$_POST['dia']."' AND HORA_DESDE = '".$_POST['desde']."' AND HORA_HASTA = '".$_POST['hasta']."' WHERE ID_JORNADA = ".$idjornada.";";
-																	modificarBD($consulta);
-																	echo "<script>alert('Jornada modificada correctamente');</script>";
-																} else {
-																//si es nuevo, guardar
-																$consulta = "INSERT INTO JORNADAS(RELA_MEDICO, DIA, HORA_DESDE, HORA_HASTA) VALUES(".$_POST['medico'].", '".$_POST['dia']."', '".$_POST['desde']."', '".$_POST['hasta']."');";
-																modificarBD($consulta);
-																echo "<script>alert('Jornada cargada correctamente');</script>";
-																}
-															}
-															?>
-															<a href="pacientes.php" class="btn btn-sm btn-danger"> <i class="ace-icon glyphicon glyphicon-remove "></i>Cancelar</a>	
-
-														</div>
-													</form>
-
-												</div>
-											</div>
+												<i class="ace-icon fa fa-info-circle bigger-130"></i>
+												&nbsp; Referencias:
+											</a>
 										</div>
 
+										<div class="panel-collapse collapse" id="faq-1-1">
+											<div class="panel-body">
+												<p align="left" style="color:green">Verde: Turno totalmente disponible.</p>
+												<p align="left" style="color:#dfc11f">Amarillo: Turno disponible pero en dicho horario ya hay uno o más pacientes.</p>
+												<p align="left" style="color:red">Rojo: Turno no disponible.</p>
+												<p align="left" style="color:gray">Gris: En dicho horario no atienden doctores.</p>
+											</div>
+										</div>
+									</div>
+								</div>							
+										
+								<div class="embed-responsive embed-responsive-16by9 -21by9">
+								  <iframe class="embed-responsive-item" name="agenda" src="calendario.php" width=1680 height=700 frameborder=0 scrolling="auto" ></iframe>
+								</div>
+								<!-- PAGE CONTENT ENDS -->
+							</div><!-- /.col-xs-12 -->
 
-
-
-									
-
-
-								
-									<!-- PAGE CONTENT ENDS -->
-							</div><!-- /.col -->
-
-							
 						</div><!-- /.row -->
-
 					</div><!-- /.page-content -->
-
-
+				</div>
 			</div><!-- /.main-content -->
+				
+				
+
 
 			<div class="footer">
 				<div class="footer-inner">
 					<div class="footer-content">
 						<span class="bigger-120">
-							<span class="blue bolder">TurnoMedic</span>
+							<span class="blue bolder">Nombre Aplicacion</span>
 							V.1.0 &copy; 2018 
 						</span>
 
@@ -566,18 +464,8 @@ if ($_SESSION['perfil'] == "Administrador") { ?>
 
 		<!-- ace scripts -->
 		<script src="../assets/js/ace-elements.min.js"></script>
-		<script src="../assets/js/ace.min.js"></script>		
-		<script src="../assets/js/jquery.maskedinput.min.js"></script>
-		
+		<script src="../assets/js/ace.min.js"></script>
+
 		<!-- inline scripts related to this page -->
-		<script type="text/javascript">
-
-			$('.input-mask-phone').mask('(999) 999-9999');
-
-		</script>
-	<?php } else { 
-			echo "<div style='font-size: 24px; text-align: center; color: #F30808'>Acceso Restringido</div>";
-		} ?>
 	</body>
-
 </html>

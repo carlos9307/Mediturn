@@ -44,6 +44,7 @@
 		<![endif]-->
 	</head>
 <?php include('personas-funciones.php');
+
 function personaModificado($id) {
 	$consulta = "SELECT ID_PERSONA, ID_PACIENTE, APELLIDO, NOMBRE, DNI, FECHA_NAC, SEXO, NUMERO_AFILIADO FROM PERSONAS JOIN PACIENTES ON ID_PERSONA = PACIENTES.RELA_PERSONA WHERE ID_PACIENTE = ".$id."";
 	return consulta($consulta);
@@ -58,12 +59,23 @@ function contactoModificado($id, $tipo) {
 }
 
 function direccionModificado($id) {
-	$consulta = "SELECT DESCRIPCION AS DOMICILIO FROM DIRECCIONES JOIN PERSONAS ON ID_PERSONA = DIRECCIONES.RELA_PERSONA JOIN PACIENTES ON ID_PACIENTE = PACIENTES.RELA_PERSONA WHERE ID_PACIENTE = ".$id;
+	$consulta = "SELECT DESCRIPCION AS DOMICILIO FROM DIRECCIONES JOIN PERSONAS ON ID_PERSONA = DIRECCIONES.RELA_PERSONA JOIN PACIENTES ON ID_PERSONA = PACIENTES.RELA_PERSONA WHERE ID_PACIENTE = ".$id;
 	$matrizR = consulta($consulta);
 	if ($matrizR != NULL) {
 		return $matrizR[0]['DOMICILIO'];
 	}
 }
+
+function obrasocialModificado($id) {
+	$consulta ="SELECT DESCRIPCION_OS FROM OBRAS_SOCIALES JOIN PACIENTES ON ID_OBRA_SOCIAL = RELA_OBRA_SOCIAL JOIN PERSONAS ON ID_PERSONA = PACIENTES.RELA_PERSONA";
+	$consulta.=" JOIN USUARIOS ON ID_PERSONA = USUARIOS.RELA_PERSONA WHERE ID_USUARIO = ".$id."";
+	$matrizR = consulta($consulta);
+	if ($matrizR != NULL) {
+		return $matrizR[0]['DESCRIPCION_OS'];
+	}
+}
+
+if ($_SESSION['perfil'] == "Administrador") {
  ?>
 	<body class="no-skin">
 		<div id="navbar" class="navbar navbar-default          ace-save-state">
@@ -79,7 +91,7 @@ function direccionModificado($id) {
 				</button>
 
 				<div class="navbar-header pull-left">
-					<a href="index.html" class="navbar-brand">
+					<a href="index.php" class="navbar-brand">
 						<small>
 							<i class="fa fa-calendar"></i>
 							TurnoMedic
@@ -91,7 +103,7 @@ function direccionModificado($id) {
 				<div class="navbar-header pull-right" role="navigation">
 					<img class="nav-user-photo" src="../assets/images/avatars/doctor.png"/>
 					<span class="white">Bienvenido, </span>
-					<span class="white">NOMBRE USUARIO</span>
+					<span class="white"><?php echo $_SESSION['usuario']; ?></span>
 				</div>
 
 			</div><!-- /.navbar-container -->
@@ -122,7 +134,7 @@ function direccionModificado($id) {
 							<i class="ace-icon glyphicon glyphicon-ok"></i>
 						</button>
 
-						<button class="btn btn-danger">
+						<button class="btn btn-danger" onclick="window.location='../login/logout.php'">
 							<i class="ace-icon glyphicon glyphicon-log-out"></i>
 						</button>
 					</div>
@@ -144,7 +156,7 @@ function direccionModificado($id) {
 
 					<!--MENU TURNOS DEL DIA-->
 					<li class="">
-						<a href="index.html">
+						<a href="index.php">
 							<i class="menu-icon glyphicon glyphicon-time"></i>
 							<span class="menu-text"> Turnos del Dia </span>
 						</a>
@@ -154,7 +166,7 @@ function direccionModificado($id) {
 
 					<!-- MENU TURNOS-->
 					<li class="">
-						<a href="turnos-disponibles.html">
+						<a href="turnos-disponibles.php">
 							<i class="menu-icon fa fa-calendar"></i>
 							<span class="menu-text"> Turnos Disponibles </span>
 
@@ -369,7 +381,7 @@ function direccionModificado($id) {
 						<ul class="breadcrumb">
 							<li>
 								<i class="ace-icon fa fa-home home-icon"></i>
-								<a href="index.html">Inicio</a>
+								<a href="index.php">Inicio</a>
 
 							</li>
 
@@ -431,20 +443,22 @@ function direccionModificado($id) {
 											<div class="widget-body">
 												<div class="widget-main no-padding">
 													<?php 
-														$error = isset($_GET['error']) ? $_GET['error'] : null;
+														//$error = isset($_GET['error']) ? $_GET['error'] : null;
 													?>
 
-													<form class="form-horizontal" id="validation-form" name="registropaciente" action="..//procesos/cargarpaciente.php" method="POST" role="form" >
+													<form class="form-horizontal" id="validation-form" name="registropaciente" <?php if(!(isset($_GET['id']))) { echo "action=\"abm-estandar.php?tipo=nuevo\""; } else { echo "action=\"abm-estandar.php?tipo=mod\"";} ?> method="POST" role="form" >
 														<!-- <legend>Form</legend> -->
 														<?php if(isset($_GET['id'])) {
 															$personaM = personaModificado($_GET['id']);
 															$email = contactoModificado($_GET['id'], 'email');
 															$telefono = contactoModificado($_GET['id'], 'telefono');
 															$direccion = direccionModificado($_GET['id']);
+															$obraSocial = obrasocialModificado($_GET['id']);
+															echo "<input type='hidden' name='idpaciente' value=".$_GET['id']." />";
 															}?>
 														<fieldset>
 															<div class="form-group">
-																<?php if ($error == 1){ echo "El Apellido debe contener solo letras".'<br/>';	} ?>
+																<?php //if(!(isset($_GET['id']))) { if ($error == 1){ echo "El Apellido debe contener solo letras".'<br/>';	} }?>
 																<label class="control-label col-xs-12 col-sm-3 no-padding-right" for="apellido">Apellido:</label>
 
 																<div class="col-xs-12 col-sm-9">
@@ -455,7 +469,7 @@ function direccionModificado($id) {
 															</div>
 
 															<div class="form-group">
-																<?php if ($error == 2){ echo "El Nombre debe contener solo letras".'<br/>';	} ?>
+																<?php //if(!(isset($_GET['id']))) { if ($error == 2){ echo "El Nombre debe contener solo letras".'<br/>';	} }?>
 																<label class="control-label col-xs-12 col-sm-3 no-padding-right" for="nombre">Nombre:</label>
 
 																<div class="col-xs-12 col-sm-9">
@@ -476,11 +490,11 @@ function direccionModificado($id) {
 															</div>
 
 															<div class="form-group">
-																<?php if ($error == 4){ 
+																<?php /*if(!(isset($_GET['id']))) { if ($error == 4){ 
 																	echo "El DNI tiene caracteres incorrectos".'<br/>';	
 																  }elseif($error == 3){ 
 																  	echo "Este DNI ya ha sido registrado".'<br/>';	
-																  } ?>
+																  } }*/?>
 																<label class="control-label col-xs-12 col-sm-3 no-padding-right" for="dni">DNI:</label>
 
 																<div class="col-xs-12 col-sm-9">
@@ -494,7 +508,7 @@ function direccionModificado($id) {
 															<div class="form-group">
 																<label class="control-label col-xs-12 col-sm-3 no-padding-right" for="sexo">Sexo:</label>
 
-																<?php if ($error == 12){ echo "Debe seleccionar su sexo".'<br/>';	} ?>
+																<?php //if(!(isset($_GET['id']))) { if ($error == 12){ echo "Debe seleccionar su sexo".'<br/>';	} }?>
 
 																<div class="col-xs-12 col-sm-9">
 																	<div class="clearfix">
@@ -521,12 +535,8 @@ function direccionModificado($id) {
 
 																<div class="col-xs-12 col-sm-9">	
 																	<div class="input-group">																			
-																		<select class="form-control" id="localidad" name="codpostal" required >
-																			<OPTION VALUE="">SELECCIONE SU CIUDAD</OPTION>
-																			<OPTION VALUE="3600">Formosa</OPTION>
-																			<OPTION VALUE="5000">Clorinda</OPTION>
-																			<OPTION VALUE="5001">Nueva York</OPTION>
-																			<OPTION VALUE="5002">Paris</OPTION> 
+																		<select class="form-control" id="localidad" name="localidad">
+																		<?php cargar_comboLocalidad(""); ?>
 																		</select>	
 																	</div>															
 																</div>
@@ -534,27 +544,27 @@ function direccionModificado($id) {
 
 															<div class="form-group">
 
-																<?php if ($error == 6){ 
+																<?php /* if(!(isset($_GET['id']))) { if ($error == 6){ 
 																	echo "El telefono ingresado tiene caracteres incorrectos".'<br/>';	
 																  }elseif($error == 5){ 
 																  	echo "Este telefono ya esta registrado".'<br/>';	
-																  } ?>
+																  } } */?>
 																<label class="control-label col-xs-12 col-sm-3 no-padding-right" for="form-field-phone">Telefono:</label>
 
 																<div class="col-xs-12 col-sm-9">
 																	<div class="input-group">																		
-																		<input name="telefono" type="text" id="form-field-phone" <?php if (isset($telefono)) {echo "value = '".$telefono."'";} ?>/>
+																		<input name="telefono" type="text" id="form-field-phone" <?php if (isset($telefono)) {echo "value = '".$telefono."'";} else { echo "value = ''"; } ?>/>
 																	</div>
 																</div>
 															</div>
 
 															<div class="form-group">
 
-																	<?php if ($error == 8){ 
+																	<?php /* if(!(isset($_GET['id']))) { if ($error == 8){ 
 																		echo "El Email ingresado tiene caracteres incorrectos".'<br/>';	
 																	  }elseif($error == 7){ 
 																	  	echo "Este Email ya esta registrado".'<br/>';	
-																	  } ?>
+																	  } } */ ?>
 																<label class="control-label col-xs-12 col-sm-3 no-padding-right" for="email">Email:</label>
 
 																<div class="col-xs-12 col-sm-9">
@@ -571,10 +581,9 @@ function direccionModificado($id) {
 																<div class="col-xs-12 col-sm-9">	
 																	<div class="input-group">																			
 																		<select class="form-control" id="obra_social" name="os" >
-																			<OPTION VALUE="Sin Obra Social">Sin Obra Social</OPTION>
-																			<OPTION VALUE="PAMI">PAMI</OPTION>
-																			<OPTION VALUE="SWISSMEDICAL">SWISSMEDICAL</OPTION>
-																			<OPTION VALUE="OSPLAT">OSPLAT</OPTION> 
+																			<?php if (isset($obraSocial)) { cargar_comboObrasocial($obraSocial); }
+																				else	{  cargar_comboObrasocial(""); }
+																			?> 
 																		</select>	
 																	</div>															
 																</div>
@@ -583,13 +592,13 @@ function direccionModificado($id) {
 															
 															<div class="form-group">
 
-																<?php if ($error == 9){ 
+																<?php /* if(!(isset($_GET['id']))) { if ($error == 9){ 
 																	echo "El numero de afiliado ingresado ya esta registrado".'<br/>';	
 																  }elseif($error == 10){
 																  	echo "El numero ingresado contiene caracteres invalidos".'<br/>';	
 																  }elseif($error == 11){
 																  	echo "Porfavor ingresar numero de afiliado ".'<br/>';
-																  } ?>
+																  } } */?>
 
 																<label class="control-label col-xs-12 col-sm-3 no-padding-right" for="nro_afiliado">Nro Afiliado:</label>
 
@@ -599,19 +608,20 @@ function direccionModificado($id) {
 																	</div>
 																</div>
 															</div>
-
+																  
+															<?php // if (!(isset($_GET['id']))) { ?>
 															<div class="form-group">
 																<label class="control-label col-xs-12 col-sm-3 no-padding-right" for="creacuenta">¿Desea Crear una Cuenta?</label>
 
-																<?php if (!(isset($_GET['id']))) { ?>
+																
 																<div class="col-xs-12 col-sm-9">
 																	<div class="clearfix">
 																		<input type="checkbox" name="creacuenta" value="si" selected/> SI
 																	</div>
 																</div>
-																<?php } ?>
+																
 															</div>
-
+															<?php //} ?>
 
 
 														</fieldset>
@@ -620,7 +630,7 @@ function direccionModificado($id) {
 
 														<div class="form-actions center">
 
-															<input type="submit" name="registropac" href="#" class="btn btn-sm btn-success" value="Agregar" class="ace-icon glyphicon glyphicon-ok "><br/>
+															<input type="submit" name="registropac" href="#" class="btn btn-sm btn-success" value="Agregar" class="ace-icon glyphicon glyphicon-ok ">
 
 															<a href="pacientes.php" class="btn btn-sm btn-danger"> <i class="ace-icon glyphicon glyphicon-remove "></i>Cancelar</a>	
 
@@ -653,7 +663,7 @@ function direccionModificado($id) {
 				<div class="footer-inner">
 					<div class="footer-content">
 						<span class="bigger-120">
-							<span class="blue bolder">Nombre Aplicacion</span>
+							<span class="blue bolder">TurnoMedic</span>
 							V.1.0 &copy; 2018 
 						</span>
 
@@ -695,7 +705,9 @@ function direccionModificado($id) {
 			$('.input-mask-phone').mask('(999) 999-9999');
 
 		</script>
-
+		<?php } else { 
+			echo "<div style='font-size: 24px; text-align: center; color: #F30808'>Acceso Restringido</div>";
+		} ?>
 	</body>
 
 </html>

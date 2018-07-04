@@ -47,6 +47,8 @@ include('personas-funciones.php');
 if (isset($_SESSION['fechaTurno'])) {
 	$_SESSION['fechaTurno'] = NULL;
 }
+
+if ($_SESSION['perfil'] == "Administrador") { ?>
 /*$consulta = "SELECT ID_PERSONA, APELLIDO, PERSONAS.NOMBRE AS NOMBRE, FECHA_NAC, DNI, DIRECCION.DESCRIPCION, RELA_LOCALIDAD, LOCALIDAD.NOMBRE AS LOCALIDAD, O"
 consulta($);*/
  ?>
@@ -64,7 +66,7 @@ consulta($);*/
 				</button>
 
 				<div class="navbar-header pull-left">
-					<a href="index.html" class="navbar-brand">
+					<a href="index.php" class="navbar-brand">
 						<small>
 							<i class="fa fa-calendar"></i>
 							TurnoMedic
@@ -76,7 +78,7 @@ consulta($);*/
 				<div class="navbar-header pull-right" role="navigation">
 					<img class="nav-user-photo" src="../assets/images/avatars/doctor.png"/>
 					<span class="white">Bienvenido, </span>
-					<span class="white">NOMBRE USUARIO</span>
+					<span class="white"><?php echo $_SESSION['usuario']; ?></span>
 				</div>
 
 			</div><!-- /.navbar-container -->
@@ -107,7 +109,7 @@ consulta($);*/
 							<i class="ace-icon glyphicon glyphicon-ok"></i>
 						</button>
 
-						<button class="btn btn-danger">
+						<button class="btn btn-danger" onclick="window.location='../login/logout.php'">
 							<i class="ace-icon glyphicon glyphicon-log-out"></i>
 						</button>
 					</div>
@@ -129,7 +131,7 @@ consulta($);*/
 
 					<!--MENU TURNOS DEL DIA-->
 					<li class="">
-						<a href="index.html">
+						<a href="index.php">
 							<i class="menu-icon glyphicon glyphicon-time"></i>
 							<span class="menu-text"> Turnos del Dia </span>
 						</a>
@@ -355,7 +357,7 @@ consulta($);*/
 						<ul class="breadcrumb">
 							<li>
 								<i class="ace-icon fa fa-home home-icon"></i>
-								<a href="index.html">Inicio</a>
+								<a href="index.php">Inicio</a>
 
 							</li>
 
@@ -569,5 +571,8 @@ consulta($);*/
 		<script src="../assets/js/ace.min.js"></script>
 
 		<!-- inline scripts related to this page -->
+		<?php } else { 
+			echo "<div style='font-size: 24px; text-align: center; color: #F30808'>Acceso Restringido</div>";
+		} ?>
 	</body>
 </html>

@@ -51,6 +51,7 @@ if(isset($_GET['fecha']) && isset($_GET['hora'])) { //Guardo la fecha y la hora 
         </style>
 </head>
 <body>
+<?php if ($_SESSION['perfil'] == "Administrador") { ?>
 <div id="buscarPersona" style="">
     <div class="widget-body">
         <div class="widget-main">
@@ -193,6 +194,9 @@ if(isset($_GET['fecha']) && isset($_GET['hora'])) { //Guardo la fecha y la hora 
             } else {
                 ocultar("buscarPersona");
             }
-		</script>
+        </script>
+        <?php } else { 
+			echo "<div style='font-size: 24px; text-align: center; color: #F30808'>Acceso Restringido</div>";
+		} ?>
 </body>
 </html>
